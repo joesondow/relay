@@ -8,24 +8,31 @@ import twitter4j.Status;
 public class Bot {
 
     /**
-     * The object that does the tweeting.
+     * The object that does the retweeting and unretweeting.
      */
-    private Tweeter tweeter;
+    private Retweeter retweeter;
+    private BotConfig botConfig;
 
     /**
-     * Constructs a new bot with the specified Tweeter, for unit testing.
+     * Constructs a new bot with the specified Retweeter, for unit testing.
      *
-     * @param tweeter the object that tweets
+     * @param retweeter the object that retweets and unretweets
      */
-    Bot(Tweeter tweeter) {
-        this.tweeter = tweeter;
+    Bot(Retweeter retweeter) {
+        init();
+        this.retweeter = retweeter;
     }
 
     /**
-     * Constructs a new bot.
+     * Constructs a new bot for production.
      */
     Bot() {
-        this(new Tweeter());
+        init();
+        this.retweeter = new Retweeter(botConfig.getTwitterConfig());
+    }
+
+    private void init() {
+        this.botConfig = new BotConfigFactory().configure();
     }
 
     /**
@@ -35,6 +42,15 @@ public class Bot {
      */
     public Status go() {
 
-        return tweeter.tweet("");
+        // Find this account's retweets of the target account, dating back two weeks or 60 tweets.
+        String targetScreenName = "StarTrekHour";
+        retweeter.unretweet(targetScreenName);
+
+        retweeter.findTargetTweet(new CriteriaForStarTrekHour());
+
+        long tweetId = 1234;
+
+        Status retweet = retweeter.retweet(tweetId);
+        return retweet;
     }
 }
