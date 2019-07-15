@@ -1,0 +1,57 @@
+// Repositories to use for fetching build dependencies (not application dependencies)
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'java'
+apply plugin: "groovy"
+
+group = 'sondow'
+version = '1.0'
+
+description = """\
+Uses AWS Lambda to automate retweets.
+------------------------------------------
+Project version: ${version}
+Gradle version: ${gradle.gradleVersion}
+------------------------------------------
+"""
+
+// On Windows 10 in IntelliJ, running Gradle on project with unusual characters in the source code
+// can cause 'error: unmappable character for encoding' errors unless we add these.
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+
+// Repositories to use for fetching application dependencies (not build dependencies)
+repositories {
+    jcenter()
+}
+dependencies {
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-core', version:'1.1.0'
+    compile group: 'org.twitter4j', name: 'twitter4j-core', version:'4.0.6'
+    testCompile group: 'junit', name: 'junit', version:'4.12'
+
+    // Allows setting environment variables in unit tests
+    testCompile group: 'com.github.stefanbirkner', name: 'system-rules', version:'1.16.0'
+
+    // Mandatory dependencies for using Spock
+    testCompile "org.codehaus.groovy:groovy-all:2.4.10"
+    testCompile "org.spockframework:spock-core:1.1-groovy-2.4"
+
+    // Optional dependencies for using Spock
+
+    // Only necessary if Hamcrest matchers are used
+    testCompile "org.hamcrest:hamcrest-core:1.3"
+
+    // Allows mocking of classes (in addition to interfaces)
+    testRuntime "net.bytebuddy:byte-buddy:1.6.5"
+
+    // Allows mocking of classes without default constructor (together with CGLIB)
+    testRuntime "org.objenesis:objenesis:2.5.1"
+}
