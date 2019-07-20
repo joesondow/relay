@@ -26,13 +26,21 @@ public class CriteriaForStarTrekHour implements Criteria {
     @Override
     public boolean matches(Status tweet) {
         Date lastWeek = Date.from(time.nowZonedDateTime().minusDays(7).toInstant());
-        return (!tweet.isRetweet()) &&
-                tweet.getUser().getScreenName().equals("StarTrekHour") &&
-                tweet.getCreatedAt().after(lastWeek) &&
-                tweet.getText().startsWith("Tues,") &&
-                tweet.getURLEntities().length == 1 &&
-                tweet.getURLEntities()[0].getExpandedURL().contains("docs.google.com/forms") &&
-                tweet.getMediaEntities().length == 1;
+        boolean isRetweet = tweet.isRetweet();
+        boolean tweetedByStarTrekHour = tweet.getUser().getScreenName().equals("StarTrekHour");
+        boolean isRecent = tweet.getCreatedAt().after(lastWeek);
+        boolean startsWithTues = tweet.getText().startsWith("Tues,");
+        boolean hasOneUrl = tweet.getURLEntities().length == 1;
+        boolean urlLinksToForm = tweet.getURLEntities()[0].getDisplayURL()
+                .contains("docs.google.com/forms");
+        boolean hasOneImage = tweet.getMediaEntities().length == 1;
+        return (!isRetweet) &&
+                tweetedByStarTrekHour &&
+                isRecent &&
+                startsWithTues &&
+                hasOneUrl &&
+                urlLinksToForm &&
+                hasOneImage;
     }
 
     public String screenName() {
