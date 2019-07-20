@@ -41,4 +41,8 @@ public class LambdaRequestHandler implements RequestHandler<Object, Object> {
     public Object handleRequest(Object input, Context context) {
         return bot.go();
     }
+
+    public static void main(String[] args) {
+        new LambdaRequestHandler().handleRequest(null, null);
+    }
 }
