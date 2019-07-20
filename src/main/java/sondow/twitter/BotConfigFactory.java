@@ -31,6 +31,6 @@ public class BotConfigFactory {
         configBuilder.setOAuthAccessToken(accessToken);
         configBuilder.setOAuthAccessTokenSecret(accessTokenSecret);
 
-        return configBuilder.setTrimUserEnabled(false).build();
+        return configBuilder.setTrimUserEnabled(false).setTweetModeExtended(true).build();
     }
 }
