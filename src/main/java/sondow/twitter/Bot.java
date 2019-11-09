@@ -45,12 +45,12 @@ public class Bot {
         // Find this account's retweets of the target account, dating back two weeks or 60 tweets.
         String targetScreenName = "StarTrekHour";
         retweeter.unretweet(targetScreenName);
-
-        retweeter.findTargetTweet(new CriteriaForStarTrekHour());
-
-        long tweetId = 1234;
-
-        Status retweet = retweeter.retweet(tweetId);
+        Status retweet = null;
+        Status targetTweet = retweeter.findTargetTweet(new CriteriaForStarTrekHour());
+        if (targetTweet != null) {
+            long tweetId = targetTweet.getId();
+            retweet = retweeter.retweet(tweetId);
+        }
         return retweet;
     }
 }
