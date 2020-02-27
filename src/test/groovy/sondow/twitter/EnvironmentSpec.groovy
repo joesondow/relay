@@ -13,10 +13,12 @@ class EnvironmentSpec extends Specification {
         setup:
         envVars.set("twitter_access_id", "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZmoondoggy")
         envVars.set("twitter_handle", "SchoolsOfFish")
+        Keymaster keymaster = Mock()
+        Environment environment = new Environment(keymaster)
 
         expect:
-        "moondoggy" == Environment.get("twitter_access_id")
-        "SchoolsOfFish" == Environment.get("twitter_handle")
+        "moondoggy" == environment.get("twitter_access_id")
+        "SchoolsOfFish" == environment.get("twitter_handle")
     }
 
     def "Environment.get should strip prefix if present twice"() {
@@ -24,10 +26,12 @@ class EnvironmentSpec extends Specification {
         envVars.set("twitter_access_id",
                 "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZmoondoggy")
         envVars.set("twitter_handle", "SchoolsOfFish")
+        Keymaster keymaster = Mock()
+        Environment environment = new Environment(keymaster)
 
         expect:
-        "moondoggy" == Environment.get("twitter_access_id")
-        "SchoolsOfFish" == Environment.get("twitter_handle")
+        "moondoggy" == environment.get("twitter_access_id")
+        "SchoolsOfFish" == environment.get("twitter_handle")
     }
 
     def "Environment.get should strip prefix if present thrice"() {
@@ -36,10 +40,12 @@ class EnvironmentSpec extends Specification {
                 "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
                         "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZmoondoggy")
         envVars.set("twitter_handle", "SchoolsOfFish")
+        Keymaster keymaster = Mock()
+        Environment environment = new Environment(keymaster)
 
         expect:
-        "moondoggy" == Environment.get("twitter_access_id")
-        "SchoolsOfFish" == Environment.get("twitter_handle")
+        "moondoggy" == environment.get("twitter_access_id")
+        "SchoolsOfFish" == environment.get("twitter_handle")
     }
 
     def "Environment.get should strip prefix if present quarce"() {
@@ -49,80 +55,42 @@ class EnvironmentSpec extends Specification {
                         "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
                         "moondoggy")
         envVars.set("twitter_handle", "SchoolsOfFish")
+        Keymaster keymaster = Mock()
+        Environment environment = new Environment(keymaster)
 
         expect:
-        "moondoggy" == Environment.get("twitter_access_id")
-        "SchoolsOfFish" == Environment.get("twitter_handle")
-    }
-
-    def "Environment.get should strip suffix if present once"() {
-        setup:
-        envVars.set("twitter_access_id", "moondoggy1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-        envVars.set("twitter_handle", "SchoolsOfFish")
-
-        expect:
-        "moondoggy" == Environment.get("twitter_access_id")
-        "SchoolsOfFish" == Environment.get("twitter_handle")
-    }
-
-    def "Environment.get should strip suffix if present twice"() {
-        setup:
-        envVars.set("twitter_access_id",
-                "moondoggy1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-        envVars.set("twitter_handle", "SchoolsOfFish")
-
-        expect:
-        "moondoggy" == Environment.get("twitter_access_id")
-        "SchoolsOfFish" == Environment.get("twitter_handle")
-    }
-
-    def "Environment.get should strip suffix if present quarce"() {
-        setup:
-        envVars.set("twitter_access_id", "moondoggy1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-                "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-                "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-        envVars.set("twitter_handle", "SchoolsOfFish")
-
-        expect:
-        "moondoggy" == Environment.get("twitter_access_id")
-        "SchoolsOfFish" == Environment.get("twitter_handle")
-    }
-
-    def "Environment.get should strip prefix and suffix if present"() {
-        setup:
-        envVars.set("twitter_access_id",
-                "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-                        "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZmoondoggy" +
-                        "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-                        "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-        envVars.set("twitter_handle", "SchoolsOfFish")
-
-        expect:
-        "moondoggy" == Environment.get("twitter_access_id")
-        "SchoolsOfFish" == Environment.get("twitter_handle")
+        "moondoggy" == environment.get("twitter_access_id")
+        "SchoolsOfFish" == environment.get("twitter_handle")
     }
 
     def "Environment.get should use default value if variable not set"() {
+        setup:
+        Keymaster keymaster = Mock()
+        Environment environment = new Environment(keymaster)
 
         expect:
-        "sunny" == Environment.get("nothing_here", "sunny")
+        "sunny" == environment.get("nothing_here", "sunny")
     }
 
-    def "getInt should return null if variable not set"() {
+    def "getInt should return default value if variable not set"() {
         setup:
         envVars.set("width", "1400")
+        Keymaster keymaster = Mock()
+        Environment environment = new Environment(keymaster)
 
         expect:
-        Environment.getInt("width") == 1400
-        Environment.getInt("height") == null
+        1400 == environment.getInt("width", 800)
+        600 == environment.getInt("height", 600)
     }
 
     def "getInt should throw NumberFormatException if value is not an integer"() {
         setup:
         envVars.set("width", "wide")
+        Keymaster keymaster = Mock()
+        Environment environment = new Environment(keymaster)
 
         when:
-        Environment.getInt("width")
+        environment.getInt("width", 800)
 
         then:
         thrown NumberFormatException

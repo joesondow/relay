@@ -8,6 +8,16 @@ import twitter4j.conf.ConfigurationBuilder;
  */
 public class BotConfigFactory {
 
+    private Environment environment;
+
+    public BotConfigFactory(Environment environment) {
+        this.environment = environment;
+    }
+
+    public BotConfigFactory() {
+        this(new Environment());
+    }
+
     public BotConfig configure() {
         Configuration twitterConf = configureTwitter();
         return new BotConfig(twitterConf);
@@ -16,7 +26,7 @@ public class BotConfigFactory {
     private Configuration configureTwitter() {
         ConfigurationBuilder configBuilder = new ConfigurationBuilder();
 
-        String credentialsCsv = Environment.require("twitter_credentials");
+        String credentialsCsv = environment.require("twitter_credentials");
 
         String[] tokens = credentialsCsv.split(",");
         String screenName = tokens[0];

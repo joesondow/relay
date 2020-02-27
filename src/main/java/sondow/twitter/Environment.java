@@ -1,40 +1,39 @@
 package sondow.twitter;
 
 /**
- * AWS has an encryption bug right now in their free tier services right now. See
- * https://twitter.com/JoeSondow/status/856638770182881280
+ * AWS KMS is an option but there's no free tier to use it, so this class uses my custom Encryptor scheme, with keys that are not in a public repo but are stored either in the deployed jar file or on
+ * the local development file system in an adjacent project called "cipher".
  * <p>
- * The main reason I would like to encrypt some secret values set in environment variables so that I
- * can live stream some coding and show the web page where I'm doing the deployment without
- * accidentally broadcasting the secret values in the environment variables. Since the AWS lambda
- * page only shows a limited number of characters of each common var, this particular secrecy
- * problem can be solved by prepending space-filling characters onto each value at deploy time, and
- * the stripping those characters at runtime if the characters are present. Since Amazon has
- * repeatedly widened the layout of the deployment page, revealing more characters, we remove as
- * many copies of the space filler string as we can find prepended to the common var value. This
- * way we can keep prepending longer obfuscation strings without modifying this code each time
- * Amazon changes their layout.
- * <p>
- * Similarly, the launch configuration in IntelliJ shows the end of the environment variables, so
- * this class also trims all copies of the space filler string from the end of the string as well.
+ * The main reason I encrypt some secret values set in environment variables is so that I can live stream some coding and show the web page where I'm doing the deployment without accidentally
+ * broadcasting the secret values in the environment variables.
  *
  * @author @JoeSondow
  */
 public class Environment {
 
     public static final String SPACE_FILLER = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private Keymaster keymaster;
+    private Encryptor encryptor = new Encryptor();
 
-    public static String get(String key) {
-        return get(key, null);
+    public Environment() {
+        this(new Keymaster());
     }
 
-    public static String get(String key, String defaultValue) {
-        String value = System.getenv(key);
+    public Environment(Keymaster keymaster) {
+        this.keymaster = keymaster;
+    }
+
+    public String get(String name) {
+        return get(name, null);
+    }
+
+    public String get(String name, String defaultValue) {
+        String rawValue = System.getenv(name);
         String modified;
-        if (value == null) {
+        if (rawValue == null) {
             modified = defaultValue;
         } else {
-            modified = value;
+            modified = rawValue;
             while (modified.startsWith(SPACE_FILLER)) {
                 modified = modified.substring(SPACE_FILLER.length());
             }
@@ -42,13 +41,19 @@ public class Environment {
                 modified = modified.substring(0, modified.length() - SPACE_FILLER.length());
             }
         }
+        if (modified != null) {
+            String cryptoKey = keymaster.getCryptoKey(name);
+            if (cryptoKey != null) {
+                modified = encryptor.decrypt(modified, cryptoKey);
+            }
+        }
         return modified;
     }
 
-    public static Integer getInt(String key) {
-        String rawValue = get(key);
+    public Integer getInt(String name, int defaultValue) {
+        String rawValue = get(name);
         if (rawValue == null) {
-            return null;
+            return defaultValue;
         }
         return new Integer(rawValue);
     }
@@ -56,30 +61,14 @@ public class Environment {
     /**
      * Throws a RuntimeException if the specified environment variable has a null value.
      *
-     * @param key the name of the environment variable
+     * @param name the name of the environment variable
      * @return the value of the environment variable
      */
-    static String require(String key) {
-        String value = get(key);
+    public String require(String name) {
+        String value = get(name);
         if (value == null) {
-            throw new RuntimeException("Required environment variable '" + key + "' is missing.");
+            throw new RuntimeException("Required environment variable '" + name + "' is missing.");
         }
         return value;
-    }
-
-    static String either(String key1, String key2) {
-        String value1 = get(key1);
-        String value2 = get(key1);
-        if (value1 == null && value2 == null) {
-            throw new RuntimeException("Required environment variable missing: either '" + key1 +
-                    "' or '" + key2 + "'.");
-        }
-        String chosen;
-        if (value1 == null) {
-            chosen = value2;
-        } else {
-            chosen = value1;
-        }
-        return chosen;
     }
 }

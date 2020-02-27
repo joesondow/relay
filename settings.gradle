@@ -1,1 +1,4 @@
-rootProject.name = 'relay'
+// Get root project name from a file that is accessible by both Java and Gradle
+Properties properties = new Properties()
+properties.load(new File('src/main/resources/build.properties').newDataInputStream())
+rootProject.name = properties.getProperty('root.project.name')

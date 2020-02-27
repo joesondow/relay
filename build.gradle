@@ -7,6 +7,14 @@ buildscript {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
     }
 }
+
+// Encryption keys are stored in a file that is not in this project's source control.
+// Include that file as a resource in the built jar for deployment but do not copy
+// it into this project's source files.
+project.afterEvaluate {
+    processResources.from '../cipher/' + rootProject.name + '-encryption-keys.json'
+}
+
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 apply plugin: "groovy"

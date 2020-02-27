@@ -15,10 +15,13 @@ class BotConfigFactorySpec extends Specification {
         String f = Environment.SPACE_FILLER
         String val = "${f}${f}cartoons,mickeymouse,georgejetson,fredflintstone,bugsbunny${f}${f}"
         envVars.set("twitter_credentials", val)
+        Keymaster keymaster = Mock()
+        Environment environment = new Environment(keymaster)
+        BotConfigFactory factory = new BotConfigFactory(environment)
+        BotConfig botConfig = factory.configure()
 
         when:
-        BotConfig tetraConfig = new BotConfigFactory().configure()
-        Configuration twitterConfig = tetraConfig.getTwitterConfig()
+        Configuration twitterConfig = botConfig.getTwitterConfig()
 
         then:
         with(twitterConfig) {
