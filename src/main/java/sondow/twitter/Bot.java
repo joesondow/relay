@@ -28,7 +28,7 @@ public class Bot {
      */
     Bot() {
         init();
-        this.retweeter = new Retweeter(botConfig.getTwitterConfig());
+        this.retweeter = new Retweeter(botConfig.getPollReadingTwitterConfig());
     }
 
     private void init() {
@@ -43,13 +43,16 @@ public class Bot {
     public Status go() {
 
         // Find this account's retweets of the target account, dating back two weeks or 60 tweets.
-        String targetScreenName = "StarTrekHour";
-        retweeter.unretweet(targetScreenName);
+        TargetChooser targetChooser = new TargetChooser();
+        String targetScreenName = targetChooser.chooseTarget();
+
+
+        retweeter.unretweet();
         Status retweet = null;
         Status targetTweet = retweeter.findTargetTweet(new CriteriaForStarTrekHour());
         if (targetTweet != null) {
             long tweetId = targetTweet.getId();
-            retweet = retweeter.retweet(tweetId);
+//            retweet = retweeter.retweet(tweetId);
         }
         return retweet;
     }
