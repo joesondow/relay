@@ -54,12 +54,10 @@ public class Retweeter {
     }
 
     /**
-     * Attempts to delete all the recent retweets of the specified account, from the logged in
+     * Attempts to delete all the recent retweets from the logged in
      * account's user timeline.
-     *
-     * @param twitterHandle the owner of the tweets that are to be unretweeted
      */
-    public void unretweet(String twitterHandle) {
+    public void unretweet() {
 
         List<Status> retweets = new ArrayList<>();
         ZonedDateTime now = time.nowZonedDateTime();
@@ -82,8 +80,7 @@ public class Retweeter {
                 }
                 for (int u = 0; u < tweetCountInPage && checkingRecentTweets; u++) {
                     Status tweet = userTimeline.get(u);
-                    if (tweet.isRetweet() && twitterHandle
-                            .equals(tweet.getRetweetedStatus().getUser().getScreenName())) {
+                    if (tweet.isRetweet()) {
                         retweets.add(tweet);
                     }
                     if (maxId == null) {
@@ -104,9 +101,12 @@ public class Retweeter {
             }
         }
         for (Status retweet : retweets) {
+            Status retweetedStatus = retweet.getRetweetedStatus();
+            String text = retweetedStatus.getText();
+            String screenName = retweetedStatus.getUser().getScreenName();
             try {
-                log.info("Deleting " + config.getUser() + " retweet of " + twitterHandle + " " +
-                        retweet.getRetweetedStatus().getId() + " ");
+                log.info("Deleting " + config.getUser() + " retweet " + retweet.getId() + " of " + screenName + " " +
+                        retweet.getRetweetedStatus().getId() + " with text starting '" + text.substring(0, 50));
                 twitter.destroyStatus(retweet.getId());
             } catch (TwitterException e) {
                 throw new RuntimeException(e);
@@ -129,13 +129,4 @@ public class Retweeter {
        return null;
    }
 
-    public static void main(String[] args) {
-        BotConfig botConfig = new BotConfigFactory().configure();
-        Configuration configuration = botConfig.getTwitterConfig();
-
-            Retweeter retweeter = new Retweeter(configuration);
-            retweeter.unretweet("EmojiSnakeGame");
-            //retweeter.retweet(1141508128162246656L);
-
-    }
 }

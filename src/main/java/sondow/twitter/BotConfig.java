@@ -1,5 +1,7 @@
 package sondow.twitter;
 
+import java.util.List;
+import java.util.Map;
 import twitter4j.conf.Configuration;
 
 /**
@@ -9,15 +11,29 @@ import twitter4j.conf.Configuration;
 public class BotConfig {
 
     /**
-     * The configuration for Twitter.
+     * The configuration for the Twitter account used to read polls.
      */
-    private Configuration twitterConfig;
+    private final Configuration pollReadingTwitterConfig;
 
-    BotConfig(Configuration twitterConfig) {
-        this.twitterConfig = twitterConfig;
+    /**
+     * Twitter configurations for all the screen names.
+     */
+    private final Map<String, Configuration> screenNamesToTwitterConfigs;
+
+    /** Screen names of accounts where the tweets to retweet are live polls */
+    private final List<String> pollAccounts;
+
+    BotConfig(Configuration pollReadingTwitterConfig, Map<String, Configuration> screenNamesToTwitterConfigs, List<String> pollAccounts) {
+        this.pollReadingTwitterConfig = pollReadingTwitterConfig;
+        this.screenNamesToTwitterConfigs = screenNamesToTwitterConfigs;
+        this.pollAccounts = pollAccounts;
     }
 
-    public Configuration getTwitterConfig() {
-        return twitterConfig;
+    public Configuration getPollReadingTwitterConfig() {
+        return pollReadingTwitterConfig;
+    }
+
+    public Map<String, Configuration> getScreenNamesToTwitterConfigs() {
+        return screenNamesToTwitterConfigs;
     }
 }

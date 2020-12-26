@@ -21,7 +21,7 @@ class BotConfigFactorySpec extends Specification {
         BotConfig botConfig = factory.configure()
 
         when:
-        Configuration twitterConfig = botConfig.getTwitterConfig()
+        Configuration twitterConfig = botConfig.getPollReadingTwitterConfig()
 
         then:
         with(twitterConfig) {

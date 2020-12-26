@@ -1,5 +1,9 @@
 package sondow.twitter;
 
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
@@ -19,14 +23,25 @@ public class BotConfigFactory {
     }
 
     public BotConfig configure() {
-        Configuration twitterConf = configureTwitter();
-        return new BotConfig(twitterConf);
+
+        Configuration pollReaderConf = configureTwitter("cred_twitter_poll_reading");
+        String targetAccountsCsv = environment.require("target_accounts");
+        String[] targetAccounts = targetAccountsCsv.split(",");
+        Map<String, Configuration> screenNamesToConfigs = new LinkedHashMap<>();
+        for (String account : targetAccounts) {
+            Configuration configuration = configureTwitter("cred_" + account);
+            screenNamesToConfigs.put(account, configuration);
+        }
+        String pollAccountsCsv = environment.require("poll_accounts");
+        String[] pollAccountsArray = pollAccountsCsv.split(",");
+        List<String> pollAccounts = Arrays.asList(pollAccountsArray);
+        return new BotConfig(pollReaderConf, screenNamesToConfigs, pollAccounts) ;
     }
 
-    private Configuration configureTwitter() {
+    private Configuration configureTwitter(String envVar) {
         ConfigurationBuilder configBuilder = new ConfigurationBuilder();
 
-        String credentialsCsv = environment.require("twitter_credentials");
+        String credentialsCsv = environment.require(envVar);
 
         String[] tokens = credentialsCsv.split(",");
         String screenName = tokens[0];

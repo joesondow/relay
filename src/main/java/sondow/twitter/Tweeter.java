@@ -4,7 +4,6 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.conf.ConfigurationBuilder;
 
 /**
  * Interacts with the twitter API to post tweets or do other twitter actions for a given Twitter
@@ -30,7 +29,7 @@ public class Tweeter {
      * @param botConfig the Twitter configuration to use to authenticate
      */
     public Tweeter(BotConfig botConfig) {
-        this(new TwitterFactory(botConfig.getTwitterConfig()).getInstance());
+        this(new TwitterFactory(botConfig.getPollReadingTwitterConfig()).getInstance());
     }
 
     public Tweeter(Twitter twitter) {
