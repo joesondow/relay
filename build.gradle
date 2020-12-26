@@ -12,6 +12,7 @@ buildscript {
 // Include that file as a resource in the built jar for deployment but do not copy
 // it into this project's source files.
 project.afterEvaluate {
+    processResources.from '../crypt/' + rootProject.name + '-values.json'
     processResources.from '../cipher/' + rootProject.name + '-encryption-keys.json'
 }
 
