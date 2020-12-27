@@ -1,7 +1,6 @@
 package sondow.twitter;
 
 import java.time.ZonedDateTime;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class AccountChooser {
@@ -18,29 +17,28 @@ public class AccountChooser {
         this.time = time;
     }
 
-    public String chooseTarget() {
-        // Based on current day, choose target account name.
+    public PromoterAndTarget choosePromoterAndTarget() {
+
+        // Based on current day, choose promoter account name.
         ZonedDateTime now = time.now();
         List<String> accounts = botConfig.getAccounts();
-        int daysInPeriod = accounts.size();
 
         // Divide up the year into periods of x days where x is the number of accounts.
-//        int year = now.getYear();
+        int daysInPeriod = accounts.size();
         int dayOfYear = now.getDayOfYear();
-
-//        boolean isLeapYear = GregorianCalendar.from(now).isLeapYear(year);
-//        int daysInYear = isLeapYear ? 366 : 365;
-
-        // What day of the period is itPeriod = dayOfYear % daysInPeriod; // Zero indexed
+        int indexOfPeriod = dayOfYear / daysInPeriod;
+        int modIndex = (indexOfPeriod + dayOfYear) % daysInPeriod;
+        String promoter = accounts.get(modIndex);
         int dayOfPeriod = dayOfYear % daysInPeriod;
-        return accounts.get(dayOfPeriod);
-    }
+        String target = accounts.get(dayOfPeriod);
 
-    public String choosePromoter() {
-        // Based on current day, choose promoter account name.
-
-
-
-        return "EmojiAquarium";
+        if (promoter.equals(target)) {
+            // On days when calculated promoter and target are the same, pick a target
+            // from the accounts that are not the promoter.
+            accounts.remove(target);
+            int dayOfShorterPeriod = dayOfYear % (daysInPeriod - 1);
+            target = accounts.get(dayOfShorterPeriod);
+        }
+        return new PromoterAndTarget(promoter, target);
     }
 }

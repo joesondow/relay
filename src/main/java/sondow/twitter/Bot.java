@@ -46,7 +46,8 @@ public class Bot {
 
         // Find this account's retweets dating back two weeks or 60 tweets.
         AccountChooser accountChooser = new AccountChooser(botConfig);
-        String targetScreenName = accountChooser.chooseTarget();
+        PromoterAndTarget promoterAndTarget = accountChooser.choosePromoterAndTarget();
+        String targetScreenName = promoterAndTarget.getTarget();
         Configuration twitterConfig = botConfig.getConfig(targetScreenName);
 
         Retweeter targetRetweeter = new Retweeter(twitterConfig);
