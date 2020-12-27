@@ -1,5 +1,7 @@
 package sondow.twitter;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import twitter4j.conf.Configuration;
@@ -18,12 +20,12 @@ public class BotConfig {
     /**
      * Twitter configurations for all the screen names.
      */
-    private final Map<String, Configuration> screenNamesToTwitterConfigs;
+    private final LinkedHashMap<String, Configuration> screenNamesToTwitterConfigs;
 
     /** Screen names of accounts where the tweets to retweet are live polls */
     private final List<String> pollAccounts;
 
-    BotConfig(Configuration pollReadingTwitterConfig, Map<String, Configuration> screenNamesToTwitterConfigs, List<String> pollAccounts) {
+    BotConfig(Configuration pollReadingTwitterConfig, LinkedHashMap<String, Configuration> screenNamesToTwitterConfigs, List<String> pollAccounts) {
         this.pollReadingTwitterConfig = pollReadingTwitterConfig;
         this.screenNamesToTwitterConfigs = screenNamesToTwitterConfigs;
         this.pollAccounts = pollAccounts;
@@ -39,5 +41,9 @@ public class BotConfig {
 
     public boolean isPollAccount(String targetScreenName) {
         return pollAccounts.contains(targetScreenName);
+    }
+
+    public List<String> getAccounts() {
+        return new ArrayList<>(screenNamesToTwitterConfigs.keySet());
     }
 }

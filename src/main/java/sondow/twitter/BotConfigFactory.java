@@ -27,7 +27,7 @@ public class BotConfigFactory {
         Configuration pollReaderConf = configureTwitter("cred_twitter_poll_reading");
         String targetAccountsCsv = environment.require("target_accounts");
         String[] targetAccounts = targetAccountsCsv.split(",");
-        Map<String, Configuration> screenNamesToConfigs = new LinkedHashMap<>();
+        LinkedHashMap<String, Configuration> screenNamesToConfigs = new LinkedHashMap<>();
         for (String account : targetAccounts) {
             Configuration configuration = configureTwitter("cred_" + account);
             screenNamesToConfigs.put(account, configuration);

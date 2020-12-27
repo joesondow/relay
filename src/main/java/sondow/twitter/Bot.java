@@ -13,7 +13,7 @@ public class Bot {
      */
     private Retweeter retweeter;
     private BotConfig botConfig;
-    private Time time;
+//    private Time time;
 
     /**
      * Constructs a new bot with the specified Retweeter, for unit testing.
