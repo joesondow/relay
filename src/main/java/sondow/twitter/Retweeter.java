@@ -106,9 +106,10 @@ public class Retweeter {
             String text = retweetedStatus.getText();
             String screenName = retweetedStatus.getUser().getScreenName();
             try {
-                log.info("Deleting " + config.getUser() + " retweet " + retweet.getId() + " of " + screenName + " " +
-                        retweet.getRetweetedStatus().getId() + " with text starting '" + text.substring(0, 50));
-                twitter.destroyStatus(retweet.getId());
+                long id = retweet.getId();
+                log.info("Deleting " + config.getUser() + " retweet " + id + " of " + screenName + " " +
+                        retweet.getRetweetedStatus().getId() + " with text '" + text + "'");
+                twitter.destroyStatus(id);
             } catch (TwitterException e) {
                 throw new RuntimeException(e);
             }

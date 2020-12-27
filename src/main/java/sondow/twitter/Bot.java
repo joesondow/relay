@@ -9,9 +9,15 @@ import twitter4j.conf.Configuration;
 public class Bot {
 
     private final BotConfig botConfig;
+    private final RetweeterFactory retweeterFactory;
+
+    Bot(RetweeterFactory retweeterFactory) {
+        this.botConfig = new BotConfigFactory().configure();
+        this.retweeterFactory = retweeterFactory;
+    }
 
     Bot() {
-        this.botConfig = new BotConfigFactory().configure();
+        this(new RetweeterFactory());
     }
 
     /**
@@ -27,7 +33,7 @@ public class Bot {
         String targetScreenName = promoterAndTarget.getTarget();
         Configuration targetConfig = botConfig.getConfig(targetScreenName);
 
-        Retweeter targetRetweeter = new Retweeter(targetConfig);
+        Retweeter targetRetweeter = retweeterFactory.build(targetConfig);
 
         Criteria criteria;
         if (botConfig.isPollAccount(targetScreenName)) {
@@ -42,7 +48,7 @@ public class Bot {
         Status targetTweet = targetRetweeter.findTargetTweet(criteria);
         String promoter = promoterAndTarget.getPromoter();
         Configuration promoterConfig = botConfig.getConfig(promoter);
-        Retweeter promoterRetweeter = new Retweeter(promoterConfig);
+        Retweeter promoterRetweeter = retweeterFactory.build(promoterConfig);
         promoterRetweeter.unretweet();
 
         if (targetTweet != null) {

@@ -14,7 +14,10 @@ class BotConfigFactorySpec extends Specification {
         setup:
         String f = Environment.SPACE_FILLER
         String val = "${f}${f}cartoons,mickeymouse,georgejetson,fredflintstone,bugsbunny${f}${f}"
-        envVars.set("twitter_credentials", val)
+        envVars.set("cred_twitter_poll_reading", val)
+        envVars.set("target_accounts", "Kramer")
+        envVars.set("cred_Kramer", "Kramer,a,b,c,d")
+        envVars.set("poll_accounts", "")
         Keymaster keymaster = Mock()
         Environment environment = new Environment(keymaster)
         BotConfigFactory factory = new BotConfigFactory(environment)
