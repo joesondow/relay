@@ -8,32 +8,9 @@ import twitter4j.conf.Configuration;
  */
 public class Bot {
 
-    /**
-     * The object that does the retweeting and unretweeting.
-     */
-    private Retweeter retweeter;
-    private BotConfig botConfig;
-//    private Time time;
+    private final BotConfig botConfig;
 
-    /**
-     * Constructs a new bot with the specified Retweeter, for unit testing.
-     *
-     * @param retweeter the object that retweets and unretweets
-     */
-    Bot(Retweeter retweeter) {
-        init();
-        this.retweeter = retweeter;
-    }
-
-    /**
-     * Constructs a new bot for production.
-     */
     Bot() {
-        init();
-        this.retweeter = new Retweeter(botConfig.getPollReadingTwitterConfig());
-    }
-
-    private void init() {
         this.botConfig = new BotConfigFactory().configure();
     }
 
@@ -48,12 +25,11 @@ public class Bot {
         AccountChooser accountChooser = new AccountChooser(botConfig);
         PromoterAndTarget promoterAndTarget = accountChooser.choosePromoterAndTarget();
         String targetScreenName = promoterAndTarget.getTarget();
-        Configuration twitterConfig = botConfig.getConfig(targetScreenName);
+        Configuration targetConfig = botConfig.getConfig(targetScreenName);
 
-        Retweeter targetRetweeter = new Retweeter(twitterConfig);
-        targetRetweeter.unretweet();
+        Retweeter targetRetweeter = new Retweeter(targetConfig);
 
-        Criteria criteria = null;
+        Criteria criteria;
         if (botConfig.isPollAccount(targetScreenName)) {
             criteria = Criteria.POLL;
 //        } else if (botConfig.isPinnedAccount(targetScreenName)) {
@@ -64,9 +40,14 @@ public class Bot {
 
         Status retweet = null;
         Status targetTweet = targetRetweeter.findTargetTweet(criteria);
+        String promoter = promoterAndTarget.getPromoter();
+        Configuration promoterConfig = botConfig.getConfig(promoter);
+        Retweeter promoterRetweeter = new Retweeter(promoterConfig);
+        promoterRetweeter.unretweet();
+
         if (targetTweet != null) {
             long tweetId = targetTweet.getId();
-//            retweet = retweeter.retweet(tweetId);
+            retweet = promoterRetweeter.retweet(tweetId);
         }
         return retweet;
     }
