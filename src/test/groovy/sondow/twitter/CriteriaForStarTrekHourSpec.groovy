@@ -1,6 +1,5 @@
 package sondow.twitter
 
-import java.text.SimpleDateFormat
 import java.time.ZonedDateTime
 import org.junit.Rule
 import org.junit.contrib.java.lang.system.EnvironmentVariables
@@ -30,7 +29,7 @@ class CriteriaForStarTrekHourSpec extends Specification {
 
         then:
         expected == matches
-        time.nowZonedDateTime() >> now
+        time.now() >> now
         tweet.isRetweet() >> isRt
         tweet.getUser() >> user
         user.getScreenName() >> name

@@ -3,7 +3,7 @@ package sondow.twitter;
 import java.util.Date;
 import twitter4j.Status;
 
-public class CriteriaForStarTrekHour implements Criteria {
+public class CriteriaForStarTrekHour {
 
     private Time time;
 
@@ -23,9 +23,8 @@ public class CriteriaForStarTrekHour implements Criteria {
     // contains exactly one link,
     // the link's extended target contains "docs.google.com/forms",
     // has exactly one image
-    @Override
     public boolean matches(Status tweet) {
-        Date lastWeek = Date.from(time.nowZonedDateTime().minusDays(7).toInstant());
+        Date lastWeek = Date.from(time.now().minusDays(7).toInstant());
         boolean isRetweet = tweet.isRetweet();
         boolean tweetedByStarTrekHour = tweet.getUser().getScreenName().equals("StarTrekHour");
         boolean isRecent = tweet.getCreatedAt().after(lastWeek);

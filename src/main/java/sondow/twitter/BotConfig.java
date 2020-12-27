@@ -33,7 +33,11 @@ public class BotConfig {
         return pollReadingTwitterConfig;
     }
 
-    public Map<String, Configuration> getScreenNamesToTwitterConfigs() {
-        return screenNamesToTwitterConfigs;
+    public Configuration getConfig(String screenName) {
+        return screenNamesToTwitterConfigs.get(screenName);
+    }
+
+    public boolean isPollAccount(String targetScreenName) {
+        return pollAccounts.contains(targetScreenName);
     }
 }

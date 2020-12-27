@@ -1,6 +1,7 @@
 package sondow.twitter;
 
 import twitter4j.Status;
+import twitter4j.conf.Configuration;
 
 /**
  * The main application logic.
@@ -12,6 +13,7 @@ public class Bot {
      */
     private Retweeter retweeter;
     private BotConfig botConfig;
+    private Time time;
 
     /**
      * Constructs a new bot with the specified Retweeter, for unit testing.
@@ -42,14 +44,25 @@ public class Bot {
      */
     public Status go() {
 
-        // Find this account's retweets of the target account, dating back two weeks or 60 tweets.
-        TargetChooser targetChooser = new TargetChooser();
-        String targetScreenName = targetChooser.chooseTarget();
+        // Find this account's retweets dating back two weeks or 60 tweets.
+        AccountChooser accountChooser = new AccountChooser(botConfig);
+        String targetScreenName = accountChooser.chooseTarget();
+        Configuration twitterConfig = botConfig.getConfig(targetScreenName);
 
+        Retweeter targetRetweeter = new Retweeter(twitterConfig);
+        targetRetweeter.unretweet();
 
-        retweeter.unretweet();
+        Criteria criteria = null;
+        if (botConfig.isPollAccount(targetScreenName)) {
+            criteria = Criteria.POLL;
+//        } else if (botConfig.isPinnedAccount(targetScreenName)) {
+//            criteria = Criteria.PINNED;
+        } else {
+            criteria = Criteria.POPULAR;
+        }
+
         Status retweet = null;
-        Status targetTweet = retweeter.findTargetTweet(new CriteriaForStarTrekHour());
+        Status targetTweet = targetRetweeter.findTargetTweet(criteria);
         if (targetTweet != null) {
             long tweetId = targetTweet.getId();
 //            retweet = retweeter.retweet(tweetId);

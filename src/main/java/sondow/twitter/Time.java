@@ -7,7 +7,7 @@ public class Time {
 
     private final static Logger log = Logger.getLogger(Time.class);
 
-    public ZonedDateTime nowZonedDateTime() {
+    public ZonedDateTime now() {
         return ZonedDateTime.now();
     }
 
