@@ -145,7 +145,7 @@ public class Retweeter {
         }
        System.out.println(mostPopularTweet.getId() + " rt:" + mostPopularTweet.getRetweetCount() + " " + mostPopularTweet.getText() );
 
-       return null;
-   }
 
+        return mostPopularTweet;
+    }
 }
