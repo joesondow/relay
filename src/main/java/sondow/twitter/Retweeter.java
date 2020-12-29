@@ -55,8 +55,7 @@ public class Retweeter {
     }
 
     /**
-     * Attempts to delete all the recent retweets from the logged in
-     * account's user timeline.
+     * Attempts to delete all the recent retweets from the logged in account's user timeline.
      */
     public void unretweet() {
 
@@ -107,7 +106,8 @@ public class Retweeter {
             String screenName = retweetedStatus.getUser().getScreenName();
             try {
                 long id = retweet.getId();
-                log.info("Deleting " + config.getUser() + " retweet " + id + " of " + screenName + " " +
+                log.info("Deleting " + config.getUser() + " retweet " + id + " of " + screenName +
+                        " " +
                         retweet.getRetweetedStatus().getId() + " with text '" + text + "'");
                 twitter.destroyStatus(id);
             } catch (TwitterException e) {
@@ -116,19 +116,19 @@ public class Retweeter {
         }
     }
 
-   Status findTargetTweet(Criteria criteria) {
+    Status findTargetTweet(Criteria criteria) {
 
-       ResponseList<Status> userTimeline = null;
-       try {
-           userTimeline = twitter.getUserTimeline();
-       } catch (TwitterException e) {
-           throw new RuntimeException(e);
-       }
-       int highestRetweetCount = 0;
-       int highestFavoriteCountForMostRetweeted = 0;
-       Status mostPopularTweet = null;
-       if (criteria == Criteria.POPULAR) {
-            for (Status tweet : userTimeline){
+        ResponseList<Status> userTimeline;
+        try {
+            userTimeline = twitter.getUserTimeline();
+        } catch (TwitterException e) {
+            throw new RuntimeException(e);
+        }
+        int highestRetweetCount = 0;
+        int highestFavoriteCountForMostRetweeted = 0;
+        Status mostPopularTweet = null;
+        if (criteria == Criteria.POPULAR) {
+            for (Status tweet : userTimeline) {
                 int retweetCount = tweet.getRetweetCount();
                 int favoriteCount = tweet.getFavoriteCount();
                 if (retweetCount > highestRetweetCount) {
@@ -142,9 +142,9 @@ public class Retweeter {
                     }
                 }
             }
+            log.info(mostPopularTweet.getId() + " rt:" + mostPopularTweet.getRetweetCount() + " " +
+                    mostPopularTweet.getText());
         }
-       System.out.println(mostPopularTweet.getId() + " rt:" + mostPopularTweet.getRetweetCount() + " " + mostPopularTweet.getText() );
-
 
         return mostPopularTweet;
     }
