@@ -4,7 +4,6 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
 import twitter4j.Paging;
@@ -48,6 +47,7 @@ public class Retweeter {
         Status status;
         try {
             status = twitter.retweetStatus(tweetId);
+            log.info(config.getUser() + " retweeted " + tweetId + " from " + status.getRetweetedStatus().getUser().getScreenName());
         } catch (TwitterException e) {
             throw new RuntimeException(e);
         }
@@ -60,7 +60,7 @@ public class Retweeter {
     public void unretweet() {
 
         List<Status> retweets = new ArrayList<>();
-        ZonedDateTime now = time.now();
+        ZonedDateTime now = time.nowUtc();
         long daysAgoCutOff = 60;
         ZonedDateTime longAgo = now.minus(daysAgoCutOff, ChronoUnit.DAYS);
         Date cutoffDate = Date.from(longAgo.toInstant());
@@ -116,7 +116,7 @@ public class Retweeter {
         }
     }
 
-    Status findTargetTweet(Criteria criteria) {
+    Status findTargetPopularTweet() {
 
         ResponseList<Status> userTimeline;
         try {
@@ -127,8 +127,8 @@ public class Retweeter {
         int highestRetweetCount = 0;
         int highestFavoriteCountForMostRetweeted = 0;
         Status mostPopularTweet = null;
-        if (criteria == Criteria.POPULAR) {
-            for (Status tweet : userTimeline) {
+        for (Status tweet : userTimeline) {
+            if (!tweet.isRetweet()) {
                 int retweetCount = tweet.getRetweetCount();
                 int favoriteCount = tweet.getFavoriteCount();
                 if (retweetCount > highestRetweetCount) {
@@ -142,9 +142,9 @@ public class Retweeter {
                     }
                 }
             }
-            log.info(mostPopularTweet.getId() + " rt:" + mostPopularTweet.getRetweetCount() + " " +
-                    mostPopularTweet.getText());
         }
+        log.info(mostPopularTweet.getId() + " rt:" + mostPopularTweet.getRetweetCount() + " " +
+                mostPopularTweet.getText());
 
         return mostPopularTweet;
     }

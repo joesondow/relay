@@ -20,7 +20,7 @@ public class AccountChooser {
     public PromoterAndTarget choosePromoterAndTarget() {
 
         // Based on current day, choose promoter account name.
-        ZonedDateTime now = time.now();
+        ZonedDateTime now = time.nowUtc();
         List<String> accounts = botConfig.getAccounts();
 
         // Divide up the year into periods of x days where x is the number of accounts.

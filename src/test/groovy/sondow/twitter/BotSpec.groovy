@@ -18,10 +18,12 @@ class BotSpec extends Specification {
         envVars.set("cred_EmojiPettingZoo", "EmojiPettingZoo,a,b,c,d")
         envVars.set("poll_accounts", "")
         RetweeterFactory retweeterFactory = Mock()
-        Bot bot = new Bot(retweeterFactory)
+        Time time = Mock()
+        PollTweetChooserFactory pollTweetChooserFactory = Mock()
+        Bot bot = new Bot(retweeterFactory, time, pollTweetChooserFactory)
         Retweeter sofRetweeter = Mock()
         Retweeter epzRetweeter = Mock()
-        Status sofTweet = Mock()
+        Status epzTweet = Mock()
         Status retweet = Mock()
 
         when:
@@ -30,10 +32,10 @@ class BotSpec extends Specification {
         then:
         1 * retweeterFactory.build({user: 'SchoolsOfFish'}) >> sofRetweeter
         1 * retweeterFactory.build({user: 'EmojiPettingZoo'}) >> epzRetweeter
-        1 * sofRetweeter.findTargetTweet(Criteria.POPULAR) >> sofTweet
-        1 * epzRetweeter.unretweet()
-        1 * sofTweet.getId() >> 33L
-        1 * epzRetweeter.retweet(33L) >> retweet
+        1 * epzRetweeter.findTargetPopularTweet() >> epzTweet
+        1 * sofRetweeter.unretweet()
+        1 * epzTweet.getId() >> 33L
+        1 * sofRetweeter.retweet(33L) >> retweet
         result == retweet
         0 * _._
     }

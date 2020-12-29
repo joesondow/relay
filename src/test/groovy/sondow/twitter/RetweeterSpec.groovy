@@ -18,6 +18,8 @@ class RetweeterSpec extends Specification {
         Twitter twitter = Mock()
         Retweeter retweeter = new Retweeter(time, config, twitter)
         Status tweet = Mock()
+        Status retweeted = Mock()
+        User user = Mock()
 
         when:
         Status result = retweeter.retweet(1234L)
@@ -25,6 +27,10 @@ class RetweeterSpec extends Specification {
         then:
         result.is(tweet)
         1 * twitter.retweetStatus(1234L) >> tweet
+        1 * config.getUser() >> "Bob"
+        1 * tweet.getRetweetedStatus() >> retweeted
+        1 * retweeted.getUser() >> user
+        1 * user.getScreenName() >> "Sue"
         0 * _._
     }
 
@@ -52,7 +58,7 @@ class RetweeterSpec extends Specification {
         retweeter.unretweet()
 
         then:
-        1 * time.now() >> ZonedDateTime.parse('2019-06-19T08:34:55Z')
+        1 * time.nowUtc() >> ZonedDateTime.parse('2019-06-19T08:34:55Z')
         1 * twitter.getUserTimeline(new Paging()) >> userTimeline1
         1 * userTimeline1.size() >> 3
 
@@ -97,7 +103,7 @@ class RetweeterSpec extends Specification {
         retweeter.unretweet()
 
         then:
-        1 * time.now() >> ZonedDateTime.parse('2019-06-19T08:34:55Z')
+        1 * time.nowUtc() >> ZonedDateTime.parse('2019-06-19T08:34:55Z')
         1 * twitter.getUserTimeline(new Paging()) >> userTimeline
         1 * userTimeline.size() >> 0
         0 * _._
@@ -122,7 +128,7 @@ class RetweeterSpec extends Specification {
         retweeter.unretweet()
 
         then:
-        1 * time.now() >> ZonedDateTime.parse('2019-06-19T08:34:55Z')
+        1 * time.nowUtc() >> ZonedDateTime.parse('2019-06-19T08:34:55Z')
         1 * twitter.getUserTimeline(new Paging()) >> userTimeline1
         1 * userTimeline1.size() >> 2
 
@@ -157,7 +163,7 @@ class RetweeterSpec extends Specification {
         retweeter.unretweet()
 
         then:
-        1 * time.now() >> ZonedDateTime.parse('2019-06-19T08:34:55Z')
+        1 * time.nowUtc() >> ZonedDateTime.parse('2019-06-19T08:34:55Z')
         1 * twitter.getUserTimeline(new Paging()) >> userTimeline1
         1 * userTimeline1.size() >> 20
 
@@ -182,7 +188,7 @@ class RetweeterSpec extends Specification {
         retweeter.unretweet()
 
         then:
-        1 * time.now() >> ZonedDateTime.parse('2019-06-19T08:34:55Z')
+        1 * time.nowUtc() >> ZonedDateTime.parse('2019-06-19T08:34:55Z')
         24 * twitter.getUserTimeline(_) >> userTimeline1
         24 * userTimeline1.size() >> 20
         480 * userTimeline1.get(_) >> tweet0

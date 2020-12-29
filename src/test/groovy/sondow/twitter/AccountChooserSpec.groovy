@@ -28,7 +28,7 @@ class AccountChooserSpec extends Specification {
         then:
         promoterAndTarget.getPromoter() == promoter
         promoterAndTarget.getTarget() == target
-        1 * time.now() >> ZonedDateTime.parse('2020-' + date + 'T02:36:00Z')
+        1 * time.nowUtc() >> ZonedDateTime.parse('2020-' + date + 'T02:36:00Z')
 
         where:
         promoter    | target      | date
