@@ -44,7 +44,8 @@ repositories {
 dependencies {
 
     // Use log4j logging to be able to turn off spurious warnings from libraries
-    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.1'
 
     // To enable Amazon Web Services Lambda serverless execution service to run this program.
     compile group: 'com.amazonaws', name: 'aws-lambda-java-core', version: '1.1.0'

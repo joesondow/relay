@@ -5,7 +5,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
@@ -16,7 +17,7 @@ import twitter4j.conf.Configuration;
 
 public class Retweeter {
 
-    private static Logger log = Logger.getLogger(Retweeter.class);
+    private static Logger log = LogManager.getLogger(Retweeter.class);
 
     private final Time time;
     private final Configuration config;
