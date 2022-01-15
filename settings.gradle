@@ -1,4 +1,5 @@
 // Get root project name from a file that is accessible by both Java and Gradle
+String filePath = rootDir.absolutePath + File.separator + 'src/main/resources/build.properties'
 Properties properties = new Properties()
-properties.load(new File('src/main/resources/build.properties').newDataInputStream())
+properties.load(file(filePath).newDataInputStream())
 rootProject.name = properties.getProperty('root.project.name')
