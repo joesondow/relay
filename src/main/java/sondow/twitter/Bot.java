@@ -14,15 +14,15 @@ public class Bot {
     private final Time time;
     private final PollTweetChooserFactory pollTweetChooserFactory;
 
-    Bot(RetweeterFactory retweeterFactory, Time time, PollTweetChooserFactory pollTweetChooserFactory) {
-        this.botConfig = new BotConfigFactory().configure();
+    Bot(BotConfigFactory botConfigFactory, RetweeterFactory retweeterFactory, Time time, PollTweetChooserFactory pollTweetChooserFactory) {
+        this.botConfig = botConfigFactory.configure();
         this.retweeterFactory = retweeterFactory;
         this.time = time;
         this.pollTweetChooserFactory = pollTweetChooserFactory;
     }
 
     Bot() {
-        this(new RetweeterFactory(), new Time(), new PollTweetChooserFactory());
+        this(new BotConfigFactory(), new RetweeterFactory(), new Time(), new PollTweetChooserFactory());
     }
 
     /**

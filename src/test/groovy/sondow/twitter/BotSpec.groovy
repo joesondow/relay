@@ -10,7 +10,7 @@ class BotSpec extends Specification {
     @Rule
     public final EnvironmentVariables envVars = new EnvironmentVariables()
 
-    def "go should make tweeter post a tweet"() {
+    def "go should make retweeter retweet a tweet"() {
         setup:
         envVars.set("cred_twitter_poll_reading", "cartoons,mickeymouse,georgejetson,fredflintstone,bugsbunny")
         envVars.set("target_accounts", "SchoolsOfFish,EmojiPettingZoo")
@@ -20,7 +20,10 @@ class BotSpec extends Specification {
         RetweeterFactory retweeterFactory = Mock()
         Time time = Mock()
         PollTweetChooserFactory pollTweetChooserFactory = Mock()
-        Bot bot = new Bot(retweeterFactory, time, pollTweetChooserFactory)
+        Keymaster keymaster = Mock()
+        Environment environment = new Environment(keymaster)
+        BotConfigFactory botConfigFactory = new BotConfigFactory(environment)
+        Bot bot = new Bot(botConfigFactory, retweeterFactory, time, pollTweetChooserFactory)
         Retweeter sofRetweeter = Mock()
         Retweeter epzRetweeter = Mock()
         Status epzTweet = Mock()
