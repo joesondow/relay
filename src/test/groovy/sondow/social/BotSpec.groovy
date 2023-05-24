@@ -1,4 +1,4 @@
-package sondow.twitter
+package sondow.social
 
 import org.junit.Rule
 import org.junit.contrib.java.lang.system.EnvironmentVariables

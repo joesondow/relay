@@ -1,4 +1,4 @@
-package sondow.twitter
+package sondow.social
 
 import org.junit.Rule
 import org.junit.contrib.java.lang.system.EnvironmentVariables
@@ -6,7 +6,6 @@ import org.junit.contrib.java.lang.system.EnvironmentVariables
 import com.amazonaws.services.lambda.runtime.Context
 
 import spock.lang.Specification
-import twitter4j.conf.Configuration
 
 class LambdaRequestHandlerSpec extends Specification {
 

@@ -1,4 +1,4 @@
-package sondow.twitter;
+package sondow.social;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;

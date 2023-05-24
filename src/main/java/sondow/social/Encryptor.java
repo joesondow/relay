@@ -1,4 +1,4 @@
-package sondow.twitter;
+package sondow.social;
 
 import java.util.HashMap;
 import java.util.Map;

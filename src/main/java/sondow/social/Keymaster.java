@@ -1,4 +1,4 @@
-package sondow.twitter;
+package sondow.social;
 
 import java.io.IOException;
 import java.io.StringReader;

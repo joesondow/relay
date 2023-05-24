@@ -1,4 +1,4 @@
-package sondow.twitter;
+package sondow.social;
 
 import twitter4j.CardsTwitterImpl;
 import twitter4j.auth.Authorization;

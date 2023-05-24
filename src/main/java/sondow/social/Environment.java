@@ -1,4 +1,4 @@
-package sondow.twitter;
+package sondow.social;
 
 /**
  * AWS KMS is an option but there's no free tier to use it, so this class uses my custom Encryptor

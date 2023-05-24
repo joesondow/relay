@@ -1,9 +1,8 @@
-package sondow.twitter;
+package sondow.social;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 

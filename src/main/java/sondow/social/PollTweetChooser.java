@@ -1,7 +1,6 @@
-package sondow.twitter;
+package sondow.social;
 
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.Iterator;
 import twitter4j.Card;
 import twitter4j.CardsTwitterImpl;
