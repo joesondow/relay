@@ -2,6 +2,8 @@ package sondow.social;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import net.socialhub.http.HttpClientImpl;
+import net.socialhub.logger.Logger;
 
 /**
  * The function that AWS Lambda will invoke.
@@ -36,6 +38,10 @@ public class LambdaRequestHandler implements RequestHandler<Object, Object> {
      */
     @Override
     public Object handleRequest(Object input, Context context) {
+
+        // bsky4j logs session credentials, which is bad security. Turn it off.
+        Logger.getLogger(HttpClientImpl.class).setLogLevel(Logger.LogLevel.ERROR);
+
         return bot.go();
     }
 
