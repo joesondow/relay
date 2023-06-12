@@ -45,12 +45,12 @@ public class Bot {
         Status retweet = null;
         Long tweetId = null;
         if (botConfig.isPollAccount(targetScreenName)) {
-            Configuration pollReadingConfig = botConfig.getPollReadingTwitterConfig();
-            PollTweetChooser pollTweetChooser = pollTweetChooserFactory.build(pollReadingConfig, time);
-            StatusWithCard pollTweet = pollTweetChooser.findLivePoll(targetScreenName);
-            if (pollTweet != null) {
-                tweetId = pollTweet.getId();
-            }
+//            Configuration pollReadingConfig = botConfig.getPollReadingTwitterConfig();
+//            PollTweetChooser pollTweetChooser = pollTweetChooserFactory.build(pollReadingConfig, time);
+//            StatusWithCard pollTweet = pollTweetChooser.findLivePoll(targetScreenName);
+//            if (pollTweet != null) {
+//                tweetId = pollTweet.getId();
+//            }
         } else {
             Configuration targetConfig = botConfig.getConfig(targetScreenName);
             Retweeter targetRetweeter = retweeterFactory.build(targetConfig);
