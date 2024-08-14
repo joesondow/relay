@@ -16,7 +16,7 @@ class AccountChooserSpec extends Specification {
     def "should choose target and promoter based on day"() {
         setup:
         Configuration tc = Mock()
-        BotConfig botConfig = new BotConfig(null,
+        BotConfig botConfig = new BotConfig(null, null,
                 [Scrooge: tc, Launchpad: tc, Darkwing: tc, Gosling: tc, Huey: tc, Duey: tc, Louie:
                         tc] as LinkedHashMap, [])
         Time time = Mock()

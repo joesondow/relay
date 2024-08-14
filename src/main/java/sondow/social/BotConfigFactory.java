@@ -41,7 +41,7 @@ public class BotConfigFactory {
         String pollAccountsCsv = environment.require("poll_accounts");
         String[] pollAccountsArray = pollAccountsCsv.split(",");
         List<String> pollAccounts = Arrays.asList(pollAccountsArray);
-        return new BotConfig(blueskyShortHandlesToConfigs, screenNamesToConfigs, pollAccounts) ;
+        return new BotConfig(blueskyShortHandlesToConfigs, null, screenNamesToConfigs, pollAccounts) ;
     }
 
     private BlueskyConfig configureBluesky(String envVar) {

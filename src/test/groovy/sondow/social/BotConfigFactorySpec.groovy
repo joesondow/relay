@@ -15,8 +15,10 @@ class BotConfigFactorySpec extends Specification {
         String f = Environment.SPACE_FILLER
         String val = "${f}${f}cartoons,mickeymouse,georgejetson,fredflintstone,bugsbunny${f}${f}"
         envVars.set("cred_twitter_poll_reading", val)
-        envVars.set("target_accounts", "Kramer")
-        envVars.set("cred_Kramer", "Kramer,a,b,c,d")
+        envVars.set("bluesky_short_handles", "${f}Kramer")
+        envVars.set("target_accounts", "Kramer${f}")
+        envVars.set("cred_Kramer", "${f}Kramer,a,b,c,d${f}")
+        envVars.set("cred_bluesky_Kramer", "${f}${f}bsky.social,kramer,myapppassword")
         envVars.set("poll_accounts", "")
         Keymaster keymaster = Mock()
         Environment environment = new Environment(keymaster)
@@ -24,14 +26,13 @@ class BotConfigFactorySpec extends Specification {
         BotConfig botConfig = factory.configure()
 
         when:
-        Configuration twitterConfig = botConfig.getPollReadingTwitterConfig()
+        LinkedHashMap<String, BlueskyConfig> blueskyShortHandlesToConfigs =
+                botConfig.getBlueskyShortHandlesToConfigs()
 
         then:
-        with(twitterConfig) {
-            OAuthConsumerKey == 'mickeymouse'
-            OAuthConsumerSecret == 'georgejetson'
-            OAuthAccessToken == 'fredflintstone'
-            OAuthAccessTokenSecret == 'bugsbunny'
-        }
+        blueskyShortHandlesToConfigs["Kramer"].server == 'bsky.social'
+        blueskyShortHandlesToConfigs["Kramer"].shortHandle == 'kramer'
+        blueskyShortHandlesToConfigs["Kramer"].fullHandle == 'kramer.bsky.social'
+        blueskyShortHandlesToConfigs["Kramer"].appPassword == 'myapppassword'
     }
 }

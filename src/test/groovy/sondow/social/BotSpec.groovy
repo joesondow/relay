@@ -12,10 +12,16 @@ class BotSpec extends Specification {
 
     def "go should make retweeter retweet a tweet"() {
         setup:
+        String f = Environment.SPACE_FILLER
         envVars.set("cred_twitter_poll_reading", "cartoons,mickeymouse,georgejetson,fredflintstone,bugsbunny")
         envVars.set("target_accounts", "SchoolsOfFish,EmojiPettingZoo")
         envVars.set("cred_SchoolsOfFish", "SchoolsOfFish,a,b,c,d")
         envVars.set("cred_EmojiPettingZoo", "EmojiPettingZoo,a,b,c,d")
+
+        envVars.set("bluesky_short_handles", "SchoolsOfFish,EmojiPettingZoo${f}")
+        envVars.set("cred_bluesky_SchoolsOfFish", "bsky.social,schoolsoffish,fishyapppassword")
+        envVars.set("cred_bluesky_EmojiPettingZoo", "bsky.social,emojipettingzoo,zooapppassword")
+
         envVars.set("poll_accounts", "")
         RetweeterFactory retweeterFactory = Mock()
         Time time = Mock()

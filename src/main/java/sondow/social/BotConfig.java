@@ -11,6 +11,9 @@ import twitter4j.conf.Configuration;
  */
 public class BotConfig {
 
+    /** Credentials for logging into Bluesky */
+    private final LinkedHashMap<String, BlueskyConfig> blueskyShortHandlesToConfigs;
+
     /**
      * The configuration for the Twitter account used to read polls.
      */
@@ -24,10 +27,15 @@ public class BotConfig {
     /** Screen names of accounts where the tweets to retweet are live polls */
     private final List<String> pollAccounts;
 
-    BotConfig(Configuration pollReadingTwitterConfig, LinkedHashMap<String, Configuration> screenNamesToTwitterConfigs, List<String> pollAccounts) {
+    BotConfig(LinkedHashMap<String, BlueskyConfig> blueskyShortHandlesToConfigs, Configuration pollReadingTwitterConfig, LinkedHashMap<String, Configuration> screenNamesToTwitterConfigs, List<String> pollAccounts) {
+        this.blueskyShortHandlesToConfigs = blueskyShortHandlesToConfigs;
         this.pollReadingTwitterConfig = pollReadingTwitterConfig;
         this.screenNamesToTwitterConfigs = screenNamesToTwitterConfigs;
         this.pollAccounts = pollAccounts;
+    }
+
+    public LinkedHashMap<String, BlueskyConfig> getBlueskyShortHandlesToConfigs() {
+        return blueskyShortHandlesToConfigs;
     }
 
     public Configuration getPollReadingTwitterConfig() {
