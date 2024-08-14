@@ -24,6 +24,13 @@ public class BotConfigFactory {
     public BotConfig configure() {
 
         Configuration pollReaderConf = configureTwitter("cred_twitter_poll_reading");
+        LinkedHashMap<String, BlueskyConfig> blueskyShortHandlesToConfigs = new LinkedHashMap<>();
+        String blueskyShortHandlesCsv = environment.require("bluesky_short_handles");
+        String[] blueskyShortHandles = blueskyShortHandlesCsv.split(",");
+        for (String shortHandle : blueskyShortHandles) {
+            BlueskyConfig blueskyConfig = configureBluesky("cred_bluesky_" + shortHandle);
+            blueskyShortHandlesToConfigs.put(shortHandle, blueskyConfig);
+        }
         String targetAccountsCsv = environment.require("target_accounts");
         String[] targetAccounts = targetAccountsCsv.split(",");
         LinkedHashMap<String, Configuration> screenNamesToConfigs = new LinkedHashMap<>();
@@ -34,7 +41,16 @@ public class BotConfigFactory {
         String pollAccountsCsv = environment.require("poll_accounts");
         String[] pollAccountsArray = pollAccountsCsv.split(",");
         List<String> pollAccounts = Arrays.asList(pollAccountsArray);
-        return new BotConfig(pollReaderConf, screenNamesToConfigs, pollAccounts) ;
+        return new BotConfig(blueskyShortHandlesToConfigs, screenNamesToConfigs, pollAccounts) ;
+    }
+
+    private BlueskyConfig configureBluesky(String envVar) {
+        String credentialsCsv = environment.require(envVar);
+        String[] tokens = credentialsCsv.split(",");
+        String server = tokens[0];
+        String shortHandle = tokens[1];
+        String appPassword = tokens[2];
+        return new BlueskyConfig(server, shortHandle, appPassword);
     }
 
     private Configuration configureTwitter(String envVar) {
