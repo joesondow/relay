@@ -23,7 +23,7 @@ class AccountChooserSpec extends Specification {
         AccountChooser accountChooser = new AccountChooser(botConfig, time)
 
         when:
-        PromoterAndTarget promoterAndTarget = accountChooser.choosePromoterAndTarget()
+        PromoterAndTarget promoterAndTarget = accountChooser.chooseTwitterPromoterAndTarget()
 
         then:
         promoterAndTarget.getPromoter() == promoter

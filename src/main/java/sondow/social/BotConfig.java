@@ -50,7 +50,7 @@ public class BotConfig {
         return pollAccounts.contains(targetScreenName);
     }
 
-    public List<String> getAccounts() {
+    public List<String> getTwitterAccounts() {
         return new ArrayList<>(screenNamesToTwitterConfigs.keySet());
     }
 }

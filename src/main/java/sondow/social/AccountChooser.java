@@ -17,11 +17,11 @@ public class AccountChooser {
         this.time = time;
     }
 
-    public PromoterAndTarget choosePromoterAndTarget() {
+    public PromoterAndTarget chooseTwitterPromoterAndTarget() {
 
         // Based on current day, choose promoter account name.
         ZonedDateTime now = time.nowUtc();
-        List<String> accounts = botConfig.getAccounts();
+        List<String> accounts = botConfig.getTwitterAccounts();
 
         // Divide up the year into periods of x days where x is the number of accounts.
         int daysInPeriod = accounts.size();

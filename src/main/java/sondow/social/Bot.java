@@ -1,7 +1,6 @@
 package sondow.social;
 
 import twitter4j.Status;
-import twitter4j.StatusWithCard;
 import twitter4j.conf.Configuration;
 
 /**
@@ -34,7 +33,7 @@ public class Bot {
 
         // Find this account's retweets dating back two weeks or 60 tweets.
         AccountChooser accountChooser = new AccountChooser(botConfig);
-        PromoterAndTarget promoterAndTarget = accountChooser.choosePromoterAndTarget();
+        PromoterAndTarget promoterAndTarget = accountChooser.chooseTwitterPromoterAndTarget();
         String targetScreenName = promoterAndTarget.getTarget();
 
         String promoter = promoterAndTarget.getPromoter();
