@@ -45,6 +45,9 @@ public class BotConfig {
     public Configuration getTwitterConfig(String screenName) {
         return screenNamesToTwitterConfigs.get(screenName);
     }
+    public BlueskyConfig getBlueskyConfig(String shortName) {
+        return blueskyShortHandlesToConfigs.get(shortName);
+    }
 
     public boolean isPollAccount(String targetScreenName) {
         return twitterPollAccounts.contains(targetScreenName);
