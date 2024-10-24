@@ -25,13 +25,13 @@ public class BotConfig {
     private final LinkedHashMap<String, Configuration> screenNamesToTwitterConfigs;
 
     /** Screen names of accounts where the tweets to retweet are live polls */
-    private final List<String> pollAccounts;
+    private final List<String> twitterPollAccounts;
 
-    BotConfig(LinkedHashMap<String, BlueskyConfig> blueskyShortHandlesToConfigs, Configuration pollReadingTwitterConfig, LinkedHashMap<String, Configuration> screenNamesToTwitterConfigs, List<String> pollAccounts) {
+    BotConfig(LinkedHashMap<String, BlueskyConfig> blueskyShortHandlesToConfigs, Configuration pollReadingTwitterConfig, LinkedHashMap<String, Configuration> screenNamesToTwitterConfigs, List<String> twitterPollAccounts) {
         this.blueskyShortHandlesToConfigs = blueskyShortHandlesToConfigs;
         this.pollReadingTwitterConfig = pollReadingTwitterConfig;
         this.screenNamesToTwitterConfigs = screenNamesToTwitterConfigs;
-        this.pollAccounts = pollAccounts;
+        this.twitterPollAccounts = twitterPollAccounts;
     }
 
     public LinkedHashMap<String, BlueskyConfig> getBlueskyShortHandlesToConfigs() {
@@ -42,12 +42,12 @@ public class BotConfig {
         return pollReadingTwitterConfig;
     }
 
-    public Configuration getConfig(String screenName) {
+    public Configuration getTwitterConfig(String screenName) {
         return screenNamesToTwitterConfigs.get(screenName);
     }
 
     public boolean isPollAccount(String targetScreenName) {
-        return pollAccounts.contains(targetScreenName);
+        return twitterPollAccounts.contains(targetScreenName);
     }
 
     public List<String> getTwitterAccounts() {

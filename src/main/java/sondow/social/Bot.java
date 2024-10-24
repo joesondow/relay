@@ -33,13 +33,13 @@ public class Bot {
 
         // Find this account's retweets dating back two weeks or 60 tweets.
         AccountChooser accountChooser = new AccountChooser(botConfig);
-        PromoterAndTarget promoterAndTarget = accountChooser.chooseTwitterPromoterAndTarget();
-        String targetScreenName = promoterAndTarget.getTarget();
+        PromoterAndTarget twitterPromoterAndTarget = accountChooser.chooseTwitterPromoterAndTarget();
+        String targetScreenName = twitterPromoterAndTarget.getTarget();
 
-        String promoter = promoterAndTarget.getPromoter();
-        Configuration promoterConfig = botConfig.getConfig(promoter);
-        Retweeter promoterRetweeter = retweeterFactory.build(promoterConfig);
-        promoterRetweeter.unretweet();
+        String twitterPromoter = twitterPromoterAndTarget.getPromoter();
+        Configuration twitterPromoterConfig = botConfig.getTwitterConfig(twitterPromoter);
+        Retweeter twitterPromoterRetweeter = retweeterFactory.build(twitterPromoterConfig);
+        twitterPromoterRetweeter.unretweet();
 
         Status retweet = null;
         Long tweetId = null;
@@ -51,7 +51,7 @@ public class Bot {
 //                tweetId = pollTweet.getId();
 //            }
         } else {
-            Configuration targetConfig = botConfig.getConfig(targetScreenName);
+            Configuration targetConfig = botConfig.getTwitterConfig(targetScreenName);
             Retweeter targetRetweeter = retweeterFactory.build(targetConfig);
             Status targetTweet = targetRetweeter.findTargetPopularTweet();
             if (targetTweet != null) {
@@ -59,7 +59,7 @@ public class Bot {
             }
         }
         if (tweetId != null) {
-            retweet = promoterRetweeter.retweet(tweetId);
+            retweet = twitterPromoterRetweeter.retweet(tweetId);
         }
         return retweet;
     }
