@@ -36,7 +36,7 @@ public class Bot {
         PromoterAndTarget twitterPromoterAndTarget = accountChooser.chooseTwitterPromoterAndTarget();
         PromoterAndTarget blueskyPromoterAndTarget = accountChooser.chooseTwitterPromoterAndTarget();
 
-        String targetScreenName = twitterPromoterAndTarget.getTarget();
+        String twitterTargetScreenName = twitterPromoterAndTarget.getTarget();
 
         String twitterPromoter = twitterPromoterAndTarget.getPromoter();
         Configuration twitterPromoterConfig = botConfig.getTwitterConfig(twitterPromoter);
@@ -45,7 +45,7 @@ public class Bot {
 
         Status retweet = null;
         Long tweetId = null;
-        if (botConfig.isPollAccount(targetScreenName)) {
+        if (botConfig.isPollAccount(twitterTargetScreenName)) {
 //            Configuration pollReadingConfig = botConfig.getPollReadingTwitterConfig();
 //            PollTweetChooser pollTweetChooser = pollTweetChooserFactory.build(pollReadingConfig, time);
 //            StatusWithCard pollTweet = pollTweetChooser.findLivePoll(targetScreenName);
@@ -53,9 +53,9 @@ public class Bot {
 //                tweetId = pollTweet.getId();
 //            }
         } else {
-            Configuration targetConfig = botConfig.getTwitterConfig(targetScreenName);
-            Retweeter targetRetweeter = retweeterFactory.build(targetConfig);
-            Status targetTweet = targetRetweeter.findTargetPopularTweet();
+            Configuration targetConfig = botConfig.getTwitterConfig(twitterTargetScreenName);
+            Retweeter twitterTargetRetweeter = retweeterFactory.build(targetConfig);
+            Status targetTweet = twitterTargetRetweeter.findTargetPopularTweet();
             if (targetTweet != null) {
                 tweetId = targetTweet.getId();
             }
