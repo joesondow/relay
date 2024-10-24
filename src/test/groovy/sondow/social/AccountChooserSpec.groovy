@@ -26,56 +26,57 @@ class AccountChooserSpec extends Specification {
         AccountChooser accountChooser = new AccountChooser(botConfig, time)
 
         when:
-        PromoterAndTarget promoterAndTarget = accountChooser.chooseTwitterPromoterAndTarget()
+        PromoterAndTarget blueskyPromoterAndTarget = accountChooser.chooseBlueskyPromoterAndTarget()
+
 
         then:
-        promoterAndTarget.getPromoter() == promoter
-        promoterAndTarget.getTarget() == target
+        blueskyPromoterAndTarget.getPromoter() == promoter
+        blueskyPromoterAndTarget.getTarget() == target
         1 * time.nowUtc() >> ZonedDateTime.parse('2020-' + date + 'T02:36:00Z')
 
         where:
-        promoter    | target      | date
-        'Launchpad' | 'Darkwing'  | '01-01'
-        'Darkwing'  | 'Gosling'   | '01-02'
-        'Gosling'   | 'Huey'      | '01-03'
-        'Huey'      | 'Duey'      | '01-04'
-        'Duey'      | 'Louie'     | '01-05'
-        'Louie'     | 'Scrooge'   | '01-06'
-        'Launchpad' | 'Scrooge'   | '01-07'
-        'Darkwing'  | 'Launchpad' | '01-08'
-        'Gosling'   | 'Darkwing'  | '01-09'
-        'Huey'      | 'Gosling'   | '01-10'
-        'Duey'      | 'Huey'      | '01-11'
-        'Louie'     | 'Duey'      | '01-12'
-        'Scrooge'   | 'Louie'     | '01-13'
-        'Darkwing'  | 'Scrooge'   | '01-14'
-        'Gosling'   | 'Launchpad' | '01-15'
-        'Huey'      | 'Darkwing'  | '01-16'
-        'Duey'      | 'Gosling'   | '01-17'
-        'Louie'     | 'Huey'      | '01-18'
-        'Scrooge'   | 'Duey'      | '01-19'
-        'Launchpad' | 'Louie'     | '01-20'
-        'Gosling'   | 'Scrooge'   | '01-21'
-        'Huey'      | 'Launchpad' | '01-22'
-        'Duey'      | 'Darkwing'  | '01-23'
-        'Louie'     | 'Gosling'   | '01-24'
-        'Scrooge'   | 'Huey'      | '01-25'
-        'Launchpad' | 'Duey'      | '01-26'
-        'Darkwing'  | 'Louie'     | '01-27'
-        'Huey'      | 'Scrooge'   | '01-28'
-        'Duey'      | 'Launchpad' | '01-29'
-        'Louie'     | 'Darkwing'  | '01-30'
-        'Scrooge'   | 'Gosling'   | '01-31'
-        'Launchpad' | 'Huey'      | '02-01'
-        'Darkwing'  | 'Duey'      | '02-02'
-        'Gosling'   | 'Louie'     | '02-03'
-        'Duey'      | 'Scrooge'   | '02-04'
-        'Louie'     | 'Launchpad' | '02-05'
-        'Scrooge'   | 'Darkwing'  | '02-06'
-        'Launchpad' | 'Gosling'   | '02-07'
-        'Darkwing'  | 'Huey'      | '02-08'
-        'Gosling'   | 'Duey'      | '02-09'
-        'Huey'      | 'Louie'     | '02-10'
-        'Louie'     | 'Scrooge'   | '02-11'
+        promoter  | target    | date
+        'Eleanor' | 'Jason'   | '01-01'
+        'Jason'   | 'Tahani'  | '01-02'
+        'Tahani'  | 'Michael' | '01-03'
+        'Michael' | 'Janet'   | '01-04'
+        'Janet'   | 'Derek'   | '01-05'
+        'Derek'   | 'Chidi'   | '01-06'
+        'Eleanor' | 'Chidi'   | '01-07'
+        'Jason'   | 'Eleanor' | '01-08'
+        'Tahani'  | 'Jason'   | '01-09'
+        'Michael' | 'Tahani'  | '01-10'
+        'Janet'   | 'Michael' | '01-11'
+        'Derek'   | 'Janet'   | '01-12'
+        'Chidi'   | 'Derek'   | '01-13'
+        'Jason'   | 'Chidi'   | '01-14'
+        'Tahani'  | 'Eleanor' | '01-15'
+        'Michael' | 'Jason'   | '01-16'
+        'Janet'   | 'Tahani'  | '01-17'
+        'Derek'   | 'Michael' | '01-18'
+        'Chidi'   | 'Janet'   | '01-19'
+        'Eleanor' | 'Derek'   | '01-20'
+        'Tahani'  | 'Chidi'   | '01-21'
+        'Michael' | 'Eleanor' | '01-22'
+        'Janet'   | 'Jason'   | '01-23'
+        'Derek'   | 'Tahani'  | '01-24'
+        'Chidi'   | 'Michael' | '01-25'
+        'Eleanor' | 'Janet'   | '01-26'
+        'Jason'   | 'Derek'   | '01-27'
+        'Michael' | 'Chidi'   | '01-28'
+        'Janet'   | 'Eleanor' | '01-29'
+        'Derek'   | 'Jason'   | '01-30'
+        'Chidi'   | 'Tahani'  | '01-31'
+        'Eleanor' | 'Michael' | '02-01'
+        'Jason'   | 'Janet'   | '02-02'
+        'Tahani'  | 'Derek'   | '02-03'
+        'Janet'   | 'Chidi'   | '02-04'
+        'Derek'   | 'Eleanor' | '02-05'
+        'Chidi'   | 'Jason'   | '02-06'
+        'Eleanor' | 'Tahani'  | '02-07'
+        'Jason'   | 'Michael' | '02-08'
+        'Tahani'  | 'Janet'   | '02-09'
+        'Michael' | 'Derek'   | '02-10'
+        'Derek'   | 'Chidi'   | '02-11'
     }
 }

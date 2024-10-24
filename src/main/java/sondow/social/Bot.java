@@ -34,6 +34,8 @@ public class Bot {
         // Find this account's retweets dating back two weeks or 60 tweets.
         AccountChooser accountChooser = new AccountChooser(botConfig);
         PromoterAndTarget twitterPromoterAndTarget = accountChooser.chooseTwitterPromoterAndTarget();
+        PromoterAndTarget blueskyPromoterAndTarget = accountChooser.chooseTwitterPromoterAndTarget();
+
         String targetScreenName = twitterPromoterAndTarget.getTarget();
 
         String twitterPromoter = twitterPromoterAndTarget.getPromoter();
