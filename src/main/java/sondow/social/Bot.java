@@ -10,18 +10,24 @@ public class Bot {
 
     private final BotConfig botConfig;
     private final RetweeterFactory retweeterFactory;
+
+    private final BlueskyReposterFactory blueskyReposterFactory;
     private final Time time;
     private final PollTweetChooserFactory pollTweetChooserFactory;
 
-    Bot(BotConfigFactory botConfigFactory, RetweeterFactory retweeterFactory, Time time, PollTweetChooserFactory pollTweetChooserFactory) {
+    Bot(BotConfigFactory botConfigFactory, RetweeterFactory retweeterFactory,
+            BlueskyReposterFactory blueskyReposterFactory, Time time,
+            PollTweetChooserFactory pollTweetChooserFactory) {
         this.botConfig = botConfigFactory.configure();
         this.retweeterFactory = retweeterFactory;
+        this.blueskyReposterFactory = blueskyReposterFactory;
         this.time = time;
         this.pollTweetChooserFactory = pollTweetChooserFactory;
     }
 
     Bot() {
-        this(new BotConfigFactory(), new RetweeterFactory(), new Time(), new PollTweetChooserFactory());
+        this(new BotConfigFactory(), new RetweeterFactory(), new BlueskyReposterFactory(),
+                new Time(), new PollTweetChooserFactory());
     }
 
     /**
@@ -47,6 +53,8 @@ public class Bot {
         String blueSkyPromoterShortName = blueskyPromoterAndTarget.getPromoter();
         BlueskyConfig blueskyPromoterConfig = botConfig.getBlueskyConfig(blueSkyPromoterShortName);
 
+
+
         Status retweet = null;
         Long tweetId = null;
         if (botConfig.isPollAccount(twitterTargetScreenName)) {
@@ -63,6 +71,8 @@ public class Bot {
             if (targetTweet != null) {
                 tweetId = targetTweet.getId();
             }
+
+            
         }
         if (tweetId != null) {
             retweet = twitterPromoterRetweeter.retweet(tweetId);
