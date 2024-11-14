@@ -52,8 +52,8 @@ public class Bot {
         String blueskyTargetShortName = blueskyPromoterAndTarget.getTarget();
         String blueSkyPromoterShortName = blueskyPromoterAndTarget.getPromoter();
         BlueskyConfig blueskyPromoterConfig = botConfig.getBlueskyConfig(blueSkyPromoterShortName);
-
-
+        BlueskyReposter blueskyReposter = blueskyReposterFactory.build(blueskyPromoterConfig);
+        blueskyReposter.unrepost();
 
         Status retweet = null;
         Long tweetId = null;

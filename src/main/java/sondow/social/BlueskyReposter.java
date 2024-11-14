@@ -31,4 +31,6 @@ public class BlueskyReposter {
 
     public void repost() {
     }
+
+    public void unrepost() {}
 }
