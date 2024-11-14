@@ -46,7 +46,7 @@ class BotSpec extends Specification {
         1 * retweeterFactory.build({user: 'EmojiPettingZoo'}) >> epzRetweeter
 
         1 * blueskyReposterFactory.build({shortHandle: 'schoolsoffish'}) >> sofBlueskyReposter
-//        1 * blueskyReposterFactory.build({shortHandle: 'emojipettingzoo'}) >> epzBlueskyReposter
+        1 * blueskyReposterFactory.build({shortHandle: 'emojipettingzoo'}) >> epzBlueskyReposter
 
         1 * epzRetweeter.findTargetPopularTweet() >> epzTweet
         1 * sofRetweeter.unretweet()
@@ -54,6 +54,7 @@ class BotSpec extends Specification {
         1 * sofRetweeter.retweet(33L) >> retweet
 
         1 * sofBlueskyReposter.unrepost()
+        1 * epzBlueskyReposter.findTargetPopularPost()
 
         result == retweet
         0 * _._

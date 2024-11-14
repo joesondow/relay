@@ -65,14 +65,17 @@ public class Bot {
 //                tweetId = pollTweet.getId();
 //            }
         } else {
-            Configuration targetConfig = botConfig.getTwitterConfig(twitterTargetScreenName);
-            Retweeter twitterTargetRetweeter = retweeterFactory.build(targetConfig);
+            Configuration twitterTargetConfig = botConfig.getTwitterConfig(twitterTargetScreenName);
+            Retweeter twitterTargetRetweeter = retweeterFactory.build(twitterTargetConfig);
             Status targetTweet = twitterTargetRetweeter.findTargetPopularTweet();
             if (targetTweet != null) {
                 tweetId = targetTweet.getId();
             }
 
-            
+            BlueskyConfig blueskyTargetConfig = botConfig.getBlueskyConfig(blueskyTargetShortName);
+            BlueskyReposter blueskyTargetReposter = blueskyReposterFactory.build(blueskyTargetConfig);
+            blueskyTargetReposter.findTargetPopularPost();
+
         }
         if (tweetId != null) {
             retweet = twitterPromoterRetweeter.retweet(tweetId);

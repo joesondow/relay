@@ -33,4 +33,6 @@ public class BlueskyReposter {
     }
 
     public void unrepost() {}
+
+    public void findTargetPopularPost() {}
 }
