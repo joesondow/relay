@@ -33,6 +33,8 @@ class BotSpec extends Specification {
         Bot bot = new Bot(botConfigFactory, retweeterFactory, blueskyReposterFactory, time, pollTweetChooserFactory)
         Retweeter sofRetweeter = Mock()
         Retweeter epzRetweeter = Mock()
+        BlueskyReposter sofBlueskyReposter = Mock()
+        BlueskyReposter epzBlueskyReposter = Mock()
         Status epzTweet = Mock()
         Status retweet = Mock()
 
@@ -42,10 +44,17 @@ class BotSpec extends Specification {
         then:
         1 * retweeterFactory.build({user: 'SchoolsOfFish'}) >> sofRetweeter
         1 * retweeterFactory.build({user: 'EmojiPettingZoo'}) >> epzRetweeter
+
+        1 * blueskyReposterFactory.build({shortHandle: 'schoolsoffish'}) >> sofBlueskyReposter
+//        1 * blueskyReposterFactory.build({shortHandle: 'emojipettingzoo'}) >> epzBlueskyReposter
+
         1 * epzRetweeter.findTargetPopularTweet() >> epzTweet
         1 * sofRetweeter.unretweet()
         1 * epzTweet.getId() >> 33L
         1 * sofRetweeter.retweet(33L) >> retweet
+
+        1 * sofBlueskyReposter.unrepost()
+
         result == retweet
         0 * _._
     }
