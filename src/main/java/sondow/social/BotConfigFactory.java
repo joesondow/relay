@@ -23,7 +23,7 @@ public class BotConfigFactory {
 
     public BotConfig configure() {
 
-        Configuration pollReaderConf = configureTwitter("cred_twitter_poll_reading");
+//        Configuration pollReaderConf = configureTwitter("cred_twitter_poll_reading");
         LinkedHashMap<String, BlueskyConfig> blueskyShortHandlesToConfigs = new LinkedHashMap<>();
         String blueskyShortHandlesCsv = environment.require("bluesky_short_handles");
         String[] blueskyShortHandles = blueskyShortHandlesCsv.split(",");
@@ -34,10 +34,10 @@ public class BotConfigFactory {
         String targetAccountsCsv = environment.require("target_accounts");
         String[] targetAccounts = targetAccountsCsv.split(",");
         LinkedHashMap<String, Configuration> screenNamesToConfigs = new LinkedHashMap<>();
-        for (String account : targetAccounts) {
-            Configuration configuration = configureTwitter("cred_" + account);
-            screenNamesToConfigs.put(account, configuration);
-        }
+//        for (String account : targetAccounts) {
+//            Configuration configuration = configureTwitter("cred_" + account);
+//            screenNamesToConfigs.put(account, configuration);
+//        }
         String pollAccountsCsv = environment.require("poll_accounts");
         String[] pollAccountsArray = pollAccountsCsv.split(",");
         List<String> pollAccounts = Arrays.asList(pollAccountsArray);
