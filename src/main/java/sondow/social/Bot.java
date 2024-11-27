@@ -39,15 +39,20 @@ public class Bot {
 
         // Find this account's retweets dating back two weeks or 60 tweets.
         AccountChooser accountChooser = new AccountChooser(botConfig);
-        PromoterAndTarget twitterPromoterAndTarget = accountChooser.chooseTwitterPromoterAndTarget();
 
-        String twitterTargetScreenName = twitterPromoterAndTarget.getTarget();
+        PromoterAndTarget twitterPromoterAndTarget;
+        String twitterTargetScreenName = null;
+        Retweeter twitterPromoterRetweeter = null;
+        boolean doingTwitter = false;
+        if (doingTwitter) {
+            twitterPromoterAndTarget = accountChooser.chooseTwitterPromoterAndTarget();
+            twitterTargetScreenName = twitterPromoterAndTarget.getTarget();
 
-        String twitterPromoter = twitterPromoterAndTarget.getPromoter();
-        Configuration twitterPromoterConfig = botConfig.getTwitterConfig(twitterPromoter);
-        Retweeter twitterPromoterRetweeter = retweeterFactory.build(twitterPromoterConfig);
-        twitterPromoterRetweeter.unretweet();
-
+            String twitterPromoter = twitterPromoterAndTarget.getPromoter();
+            Configuration twitterPromoterConfig = botConfig.getTwitterConfig(twitterPromoter);
+            twitterPromoterRetweeter = retweeterFactory.build(twitterPromoterConfig);
+            twitterPromoterRetweeter.unretweet();
+        }
         PromoterAndTarget blueskyPromoterAndTarget = accountChooser.chooseBlueskyPromoterAndTarget();
         String blueskyTargetShortName = blueskyPromoterAndTarget.getTarget();
         String blueSkyPromoterShortName = blueskyPromoterAndTarget.getPromoter();
@@ -55,31 +60,35 @@ public class Bot {
         BlueskyReposter blueskyReposter = blueskyReposterFactory.build(blueskyPromoterConfig);
         blueskyReposter.unrepost();
 
+
         Status retweet = null;
         Long tweetId = null;
-        if (botConfig.isPollAccount(twitterTargetScreenName)) {
+//        if (botConfig.isPollAccount(twitterTargetScreenName)) {
 //            Configuration pollReadingConfig = botConfig.getPollReadingTwitterConfig();
 //            PollTweetChooser pollTweetChooser = pollTweetChooserFactory.build(pollReadingConfig, time);
 //            StatusWithCard pollTweet = pollTweetChooser.findLivePoll(targetScreenName);
 //            if (pollTweet != null) {
 //                tweetId = pollTweet.getId();
 //            }
-        } else {
+//        } else {
+        if (doingTwitter) {
             Configuration twitterTargetConfig = botConfig.getTwitterConfig(twitterTargetScreenName);
             Retweeter twitterTargetRetweeter = retweeterFactory.build(twitterTargetConfig);
             Status targetTweet = twitterTargetRetweeter.findTargetPopularTweet();
             if (targetTweet != null) {
                 tweetId = targetTweet.getId();
             }
-
-            BlueskyConfig blueskyTargetConfig = botConfig.getBlueskyConfig(blueskyTargetShortName);
-            BlueskyReposter blueskyTargetReposter = blueskyReposterFactory.build(blueskyTargetConfig);
-            blueskyTargetReposter.findTargetPopularPost();
-
+            if (tweetId != null) {
+                retweet = twitterPromoterRetweeter.retweet(tweetId);
+            }
         }
-        if (tweetId != null) {
-            retweet = twitterPromoterRetweeter.retweet(tweetId);
-        }
+
+        BlueskyConfig blueskyTargetConfig = botConfig.getBlueskyConfig(blueskyTargetShortName);
+        BlueskyReposter blueskyTargetReposter = blueskyReposterFactory.build(blueskyTargetConfig);
+        blueskyTargetReposter.findTargetPopularPost();
+
+//        }
+
         return retweet;
     }
 }
