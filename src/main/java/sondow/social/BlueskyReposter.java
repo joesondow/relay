@@ -7,6 +7,7 @@ import bsky4j.api.bsky.FeedResource;
 import bsky4j.api.entity.atproto.server.ServerCreateSessionRequest;
 import bsky4j.api.entity.atproto.server.ServerCreateSessionRequest.ServerCreateSessionRequestBuilder;
 import bsky4j.api.entity.atproto.server.ServerCreateSessionResponse;
+import bsky4j.api.entity.bsky.feed.FeedDeleteRepostRequest;
 import bsky4j.api.entity.bsky.feed.FeedGetAuthorFeedRequest;
 import bsky4j.api.entity.bsky.feed.FeedGetAuthorFeedResponse;
 import bsky4j.api.entity.bsky.feed.FeedGetPostsRequest;
@@ -100,7 +101,7 @@ public class BlueskyReposter {
             Response<FeedGetAuthorFeedResponse> feeds = bluesky.feed().getAuthorFeed(feedRequest);
             FeedGetAuthorFeedResponse feedResponse = feeds.get();
             nextPageCursor = feedResponse.getCursor();
-            log.info("cursor: " + nextPageCursor);
+          //  log.info("cursor: " + nextPageCursor);
             List<FeedDefsFeedViewPost> viewPosts = feedResponse.getFeed();
             int postCountInPage = viewPosts.size();
             if (postCountInPage <= 0) {
@@ -110,6 +111,7 @@ public class BlueskyReposter {
                 FeedDefsFeedViewPost viewPost = viewPosts.get(p);
                 FeedDefsPostView post = viewPost.getPost();
                 FeedDefsViewerState viewer = post.getViewer();
+
                 if (viewer.getRepost() != null) {
                     log.info("found repost " + viewPost.getPost());
                     reposts.add(viewPost);
@@ -122,61 +124,31 @@ public class BlueskyReposter {
             }
         }
 
+        // Remove all the reposts
         for (FeedDefsFeedViewPost repost: reposts) {
             FeedDefsPostView post = repost.getPost();
+            String repostUri = post.getViewer().getRepost();
+
             RecordUnion record = post.getRecord();
             if (record instanceof FeedPost) {
                 FeedPost feedPost = (FeedPost) record;
                 String text = feedPost.getText();
                 
                 log.info(text);
+
+                BlueskyFactory
+                        .getInstance(Service.BSKY_SOCIAL.getUri())
+                        .feed().deleteRepost(
+                                FeedDeleteRepostRequest.builder()
+                                        .accessJwt(accessJwt)
+                                        .uri(repostUri)
+                                        .build()
+                        );
+
             }
 
         }
 
-        //            try {
-        //
-        //                ResponseList<Status> userTimeline = twitter.getUserTimeline(paging);
-        //                int tweetCountInPage = userTimeline.size();
-        //                if (tweetCountInPage <= 0) {
-        //                    checkingRecentTweets = false; // End of timeline, stop checking.
-        //                }
-        //                for (int u = 0; u < tweetCountInPage && checkingRecentTweets; u++) {
-        //                    Status tweet = userTimeline.get(u);
-        //                    if (tweet.isRetweet()) {
-        //                        retweets.add(tweet);
-        //                    }
-        //                    if (maxId == null) {
-        //                        maxId = tweet.getId();
-        //                    } else {
-        //                        maxId = Math.min(maxId, tweet.getId());
-        //                    }
-        //                    paging = new Paging();
-        //                    paging.setMaxId(maxId - 1);
-        //
-        //                    Date createdAt = tweet.getCreatedAt();
-        //                    if (createdAt.before(cutoffDate)) {
-        //                        checkingRecentTweets = false;
-        //                    }
-        //                }
-        //            } catch (TwitterException e) {
-        //                throw new RuntimeException(e);
-        //            }
-        //    }
-        //        for (Status retweet : retweets) {
-        //            Status retweetedStatus = retweet.getRetweetedStatus();
-        //            String text = retweetedStatus.getText();
-        //            String screenName = retweetedStatus.getUser().getScreenName();
-        //            try {
-        //                long id = retweet.getId();
-        //                log.info("Deleting " + config.getUser() + " retweet " + id + " of " + screenName +
-        //                        " " +
-        //                        retweet.getRetweetedStatus().getId() + " with text '" + text + "'");
-        //                twitter.destroyStatus(id);
-        //            } catch (TwitterException e) {
-        //                throw new RuntimeException(e);
-        //            }
-        //        }
     }
 
     public void findTargetPopularPost() {}
