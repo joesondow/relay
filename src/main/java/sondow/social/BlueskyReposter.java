@@ -44,19 +44,23 @@ public class BlueskyReposter {
 
     private BlueskyConfig blueskyConfig;
 
+    private Bluesky bluesky;
+
     /**
      * The unit test constructor.
      *
-     * @param time    source of current time
+     * @param time          source of current time
      * @param blueskyConfig the configuration for the bluesky account whose post will be reposted
+     * @param bluesky       the interface to the bluesky remote service
      */
-    public BlueskyReposter(Time time, BlueskyConfig blueskyConfig) {
+    public BlueskyReposter(Time time, BlueskyConfig blueskyConfig, Bluesky bluesky) {
         this.time = time;
         this.blueskyConfig = blueskyConfig;
+        this.bluesky = bluesky;
     }
 
     public BlueskyReposter(BlueskyConfig targetConfig) {
-        this(new Time(), targetConfig);
+        this(new Time(), targetConfig, BlueskyFactory.getInstance(Service.BSKY_SOCIAL.getUri()));
     }
 
     public void repost() {
@@ -67,10 +71,9 @@ public class BlueskyReposter {
      */
     public void unrepost() {
 
-        String bskyUri = Service.BSKY_SOCIAL.getUri();
-        Bluesky bluesky = BlueskyFactory.getInstance(bskyUri);
-        ServerResource server = BlueskyFactory.getInstance(bskyUri).server();
-        ServerCreateSessionRequest.ServerCreateSessionRequestBuilder builder = ServerCreateSessionRequest.builder();
+        ServerResource server = bluesky.server();
+        ServerCreateSessionRequest.ServerCreateSessionRequestBuilder builder =
+                ServerCreateSessionRequest.builder();
         String blueskyFullHandle = blueskyConfig.getFullHandle();
         String appPassword = blueskyConfig.getAppPassword();
         ServerCreateSessionRequest sessionRequest = builder.identifier(blueskyFullHandle)
@@ -79,7 +82,8 @@ public class BlueskyReposter {
 
         String accessJwt = response.get().getAccessJwt();
 
-        FeedGetAuthorFeedRequest.FeedGetAuthorFeedRequestBuilder feedRequestBuilder = FeedGetAuthorFeedRequest.builder();
+        FeedGetAuthorFeedRequest.FeedGetAuthorFeedRequestBuilder feedRequestBuilder =
+                FeedGetAuthorFeedRequest.builder();
 
         List<FeedDefsFeedViewPost> reposts = new ArrayList<>();
         ZonedDateTime now = time.nowUtc();
@@ -94,14 +98,15 @@ public class BlueskyReposter {
         String nextPageCursor = null;
 
         log.info(blueskyFullHandle);
+        FeedResource feedResource = bluesky.feed();
         for (int i = 0; i < maxBlueskyPages && checkingRecentPosts; i++) {
             feedRequestBuilder.cursor(nextPageCursor);
             FeedGetAuthorFeedRequest feedRequest = feedRequestBuilder.accessJwt(accessJwt)
                     .actor(blueskyFullHandle).build();
-            Response<FeedGetAuthorFeedResponse> feeds = bluesky.feed().getAuthorFeed(feedRequest);
+            Response<FeedGetAuthorFeedResponse> feeds = feedResource.getAuthorFeed(feedRequest);
             FeedGetAuthorFeedResponse feedResponse = feeds.get();
             nextPageCursor = feedResponse.getCursor();
-          //  log.info("cursor: " + nextPageCursor);
+            //  log.info("cursor: " + nextPageCursor);
             List<FeedDefsFeedViewPost> viewPosts = feedResponse.getFeed();
             int postCountInPage = viewPosts.size();
             if (postCountInPage <= 0) {
@@ -125,7 +130,7 @@ public class BlueskyReposter {
         }
 
         // Remove all the reposts
-        for (FeedDefsFeedViewPost repost: reposts) {
+        for (FeedDefsFeedViewPost repost : reposts) {
             FeedDefsPostView post = repost.getPost();
             String repostUri = post.getViewer().getRepost();
 
@@ -133,22 +138,14 @@ public class BlueskyReposter {
             if (record instanceof FeedPost) {
                 FeedPost feedPost = (FeedPost) record;
                 String text = feedPost.getText();
-                
+
                 log.info(text);
 
-                BlueskyFactory
-                        .getInstance(Service.BSKY_SOCIAL.getUri())
-                        .feed().deleteRepost(
-                                FeedDeleteRepostRequest.builder()
-                                        .accessJwt(accessJwt)
-                                        .uri(repostUri)
-                                        .build()
-                        );
-
+                FeedDeleteRepostRequest deleteRepostRequest = FeedDeleteRepostRequest.builder()
+                        .accessJwt(accessJwt).uri(repostUri).build();
+                feedResource.deleteRepost(deleteRepostRequest);
             }
-
         }
-
     }
 
     public void findTargetPopularPost() {}
