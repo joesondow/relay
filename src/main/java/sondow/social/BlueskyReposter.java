@@ -5,46 +5,31 @@ import bsky4j.BlueskyFactory;
 import bsky4j.api.atproto.ServerResource;
 import bsky4j.api.bsky.FeedResource;
 import bsky4j.api.entity.atproto.server.ServerCreateSessionRequest;
-import bsky4j.api.entity.atproto.server.ServerCreateSessionRequest.ServerCreateSessionRequestBuilder;
 import bsky4j.api.entity.atproto.server.ServerCreateSessionResponse;
 import bsky4j.api.entity.bsky.feed.FeedDeleteRepostRequest;
 import bsky4j.api.entity.bsky.feed.FeedGetAuthorFeedRequest;
 import bsky4j.api.entity.bsky.feed.FeedGetAuthorFeedResponse;
-import bsky4j.api.entity.bsky.feed.FeedGetPostsRequest;
-import bsky4j.api.entity.bsky.feed.FeedGetPostsResponse;
-import bsky4j.api.entity.bsky.feed.FeedPostRequest;
-import bsky4j.api.entity.bsky.feed.FeedPostResponse;
-import bsky4j.api.entity.bsky.feed.FeedRepostRequest;
-import bsky4j.api.entity.bsky.feed.FeedRepostResponse;
 import bsky4j.api.entity.share.Response;
 import bsky4j.domain.Service;
-import bsky4j.model.atproto.repo.RepoStrongRef;
 import bsky4j.model.bsky.feed.FeedDefsFeedViewPost;
 import bsky4j.model.bsky.feed.FeedDefsPostView;
 import bsky4j.model.bsky.feed.FeedDefsViewerState;
 import bsky4j.model.bsky.feed.FeedPost;
 import bsky4j.model.share.RecordUnion;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import sondow.common.Logger;
-import twitter4j.Paging;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 
 public class BlueskyReposter {
 
-    private Logger log = Logger.getLogger(BlueskyReposter.class);
+    private final Logger log = Logger.getLogger(BlueskyReposter.class);
 
     private final Time time;
 
-    private BlueskyConfig blueskyConfig;
+    private final BlueskyConfig blueskyConfig;
 
-    private Bluesky bluesky;
+    private final Bluesky bluesky;
 
     /**
      * The unit test constructor.
@@ -88,7 +73,7 @@ public class BlueskyReposter {
         List<FeedDefsFeedViewPost> reposts = new ArrayList<>();
         ZonedDateTime now = time.nowUtc();
         long daysAgoCutOff = 600;
-        ZonedDateTime cutoffDate = now.minus(daysAgoCutOff, ChronoUnit.DAYS);
+        ZonedDateTime cutoffDate = now.minusDays(daysAgoCutOff);
 
         boolean checkingRecentPosts = true;
         // EmojiAquarium posts 8x/day, 480x in 60 days. 50 posts per page in bluesky. 480/50 ~= 10
@@ -109,11 +94,10 @@ public class BlueskyReposter {
             //  log.info("cursor: " + nextPageCursor);
             List<FeedDefsFeedViewPost> viewPosts = feedResponse.getFeed();
             int postCountInPage = viewPosts.size();
-            if (postCountInPage <= 0) {
+            if (postCountInPage == 0) {
                 checkingRecentPosts = false; // End of timeline, stop checking.
             }
-            for (int p = 0; p < viewPosts.size(); p++) {
-                FeedDefsFeedViewPost viewPost = viewPosts.get(p);
+            for (FeedDefsFeedViewPost viewPost : viewPosts) {
                 FeedDefsPostView post = viewPost.getPost();
                 FeedDefsViewerState viewer = post.getViewer();
 
