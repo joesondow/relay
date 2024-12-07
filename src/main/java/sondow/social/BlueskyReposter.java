@@ -102,7 +102,7 @@ public class BlueskyReposter {
                 FeedDefsViewerState viewer = post.getViewer();
 
                 if (viewer.getRepost() != null) {
-                    log.info("found repost " + viewPost.getPost());
+                    log.info("found repost " + viewer.getRepost());
                     reposts.add(viewPost);
                 }
                 String indexedAt = post.getIndexedAt();
