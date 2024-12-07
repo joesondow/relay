@@ -88,8 +88,8 @@ public class BlueskyReposter {
             feedRequestBuilder.cursor(nextPageCursor);
             FeedGetAuthorFeedRequest feedRequest = feedRequestBuilder.accessJwt(accessJwt)
                     .actor(blueskyFullHandle).build();
-            Response<FeedGetAuthorFeedResponse> feeds = feedResource.getAuthorFeed(feedRequest);
-            FeedGetAuthorFeedResponse feedResponse = feeds.get();
+            Response<FeedGetAuthorFeedResponse> respFeedResp = feedResource.getAuthorFeed(feedRequest);
+            FeedGetAuthorFeedResponse feedResponse = respFeedResp.get();
             nextPageCursor = feedResponse.getCursor();
             //  log.info("cursor: " + nextPageCursor);
             List<FeedDefsFeedViewPost> viewPosts = feedResponse.getFeed();
