@@ -94,7 +94,7 @@ public class BlueskyReposter {
             //  log.info("cursor: " + nextPageCursor);
             List<FeedDefsFeedViewPost> viewPosts = feedResponse.getFeed();
             int postCountInPage = viewPosts.size();
-            if (postCountInPage == 0) {
+            if (postCountInPage == 0 || nextPageCursor == null) {
                 checkingRecentPosts = false; // End of timeline, stop checking.
             }
             for (FeedDefsFeedViewPost viewPost : viewPosts) {
