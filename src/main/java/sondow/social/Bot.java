@@ -1,5 +1,11 @@
 package sondow.social;
 
+import bsky4j.model.atproto.repo.RepoStrongRef;
+import bsky4j.model.bsky.feed.FeedDefsFeedViewPost;
+import bsky4j.model.bsky.feed.FeedDefsPostView;
+import bsky4j.model.bsky.feed.FeedPost;
+import bsky4j.model.share.RecordUnion;
+import sondow.common.Logger;
 import twitter4j.Status;
 import twitter4j.conf.Configuration;
 
@@ -7,6 +13,8 @@ import twitter4j.conf.Configuration;
  * The main application logic.
  */
 public class Bot {
+
+    private final Logger log = Logger.getLogger(Bot.class);
 
     private final BotConfig botConfig;
     private final RetweeterFactory retweeterFactory;
@@ -35,7 +43,7 @@ public class Bot {
      *
      * @return the posted tweet
      */
-    public Status go() {
+    public void go() {
 
         // Find this account's retweets dating back two weeks or 60 tweets.
         AccountChooser accountChooser = new AccountChooser(botConfig);
@@ -57,8 +65,8 @@ public class Bot {
         String blueskyTargetShortName = blueskyPromoterAndTarget.getTarget();
         String blueSkyPromoterShortName = blueskyPromoterAndTarget.getPromoter();
         BlueskyConfig blueskyPromoterConfig = botConfig.getBlueskyConfig(blueSkyPromoterShortName);
-        BlueskyReposter blueskyReposter = blueskyReposterFactory.build(blueskyPromoterConfig);
-        blueskyReposter.unrepost();
+        BlueskyReposter blueskyPromoterReposter = blueskyReposterFactory.build(blueskyPromoterConfig);
+        blueskyPromoterReposter.unrepost();
 
 
         Status retweet = null;
@@ -85,10 +93,26 @@ public class Bot {
 
         BlueskyConfig blueskyTargetConfig = botConfig.getBlueskyConfig(blueskyTargetShortName);
         BlueskyReposter blueskyTargetReposter = blueskyReposterFactory.build(blueskyTargetConfig);
-        blueskyTargetReposter.findTargetPopularPost();
+        FeedDefsFeedViewPost targetViewPost = blueskyTargetReposter.findTargetPopularPost();
+        if (targetViewPost != null) {
+            FeedDefsPostView post = targetViewPost.getPost();
+            String uri = post.getUri();
+            String cid = post.getCid();
+            RepoStrongRef repoStrongRef = new RepoStrongRef(uri, cid);
+            RecordUnion record = post.getRecord();
+            if (record instanceof FeedPost) {
+                FeedPost feedPost = (FeedPost) record;
+                String text = feedPost.getText();
 
-//        }
+                log.info(blueSkyPromoterShortName + " Reposting: cid=" + cid +"  uri=" + uri + "  text=" + text);
+            }
 
-        return retweet;
+            blueskyPromoterReposter.repost(repoStrongRef);
+        }
+
+
+        //        }
+
+//        return retweet;
     }
 }

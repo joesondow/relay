@@ -54,6 +54,10 @@ public class Time {
         return ZonedDateTime.parse(zuluTime, FORMATTER);
     }
 
+    public static String format(ZonedDateTime zonedDateTime) {
+        return zonedDateTime.format(FORMATTER);
+    }
+
     public void waitASec() {
         log.info("Waiting a second");
         try {

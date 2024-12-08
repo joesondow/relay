@@ -9,8 +9,10 @@ import bsky4j.api.entity.atproto.server.ServerCreateSessionResponse;
 import bsky4j.api.entity.bsky.feed.FeedDeleteRepostRequest;
 import bsky4j.api.entity.bsky.feed.FeedGetAuthorFeedRequest;
 import bsky4j.api.entity.bsky.feed.FeedGetAuthorFeedResponse;
+import bsky4j.api.entity.bsky.feed.FeedRepostRequest;
 import bsky4j.api.entity.share.Response;
 import bsky4j.domain.Service;
+import bsky4j.model.atproto.repo.RepoStrongRef;
 import bsky4j.model.bsky.feed.FeedDefsFeedViewPost;
 import bsky4j.model.bsky.feed.FeedDefsPostView;
 import bsky4j.model.bsky.feed.FeedDefsViewerState;
@@ -20,6 +22,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import sondow.common.Logger;
+import twitter4j.Status;
 
 public class BlueskyReposter {
 
@@ -30,6 +33,11 @@ public class BlueskyReposter {
     private final BlueskyConfig blueskyConfig;
 
     private final Bluesky bluesky;
+
+    /**
+     * The Json Web Token for the current authenticated bluesky session.
+     */
+    private String accessJwt;
 
     /**
      * The unit test constructor.
@@ -48,7 +56,13 @@ public class BlueskyReposter {
         this(new Time(), targetConfig, BlueskyFactory.getInstance(Service.BSKY_SOCIAL.getUri()));
     }
 
-    public void repost() {
+    public void repost(RepoStrongRef repoStrongRef) {
+        ensureAuthenticated();
+        String timestamp = Time.format(time.nowUtc());
+        log.info("Reposting with timestamp " + timestamp);
+        FeedRepostRequest feedRepostRequest = FeedRepostRequest.builder().accessJwt(accessJwt)
+                .subject(repoStrongRef).createdAt(timestamp).build();
+        bluesky.feed().repost(feedRepostRequest);
     }
 
     /**
@@ -56,16 +70,7 @@ public class BlueskyReposter {
      */
     public void unrepost() {
 
-        ServerResource server = bluesky.server();
-        ServerCreateSessionRequest.ServerCreateSessionRequestBuilder builder =
-                ServerCreateSessionRequest.builder();
-        String blueskyFullHandle = blueskyConfig.getFullHandle();
-        String appPassword = blueskyConfig.getAppPassword();
-        ServerCreateSessionRequest sessionRequest = builder.identifier(blueskyFullHandle)
-                .password(appPassword).build();
-        Response<ServerCreateSessionResponse> response = server.createSession(sessionRequest);
-
-        String accessJwt = response.get().getAccessJwt();
+        ensureAuthenticated();
 
         FeedGetAuthorFeedRequest.FeedGetAuthorFeedRequestBuilder feedRequestBuilder =
                 FeedGetAuthorFeedRequest.builder();
@@ -82,6 +87,7 @@ public class BlueskyReposter {
         // To get multiple pages, use cursor returned from previous response.g
         String nextPageCursor = null;
 
+        String blueskyFullHandle = blueskyConfig.getFullHandle();
         log.info(blueskyFullHandle);
         FeedResource feedResource = bluesky.feed();
         for (int i = 0; i < maxBlueskyPages && checkingRecentPosts; i++) {
@@ -123,7 +129,7 @@ public class BlueskyReposter {
                 FeedPost feedPost = (FeedPost) record;
                 String text = feedPost.getText();
 
-                log.info(text);
+                log.info("Found repost to remove: " + text);
 
                 FeedDeleteRepostRequest deleteRepostRequest = FeedDeleteRepostRequest.builder()
                         .accessJwt(accessJwt).uri(repostUri).build();
@@ -132,5 +138,55 @@ public class BlueskyReposter {
         }
     }
 
-    public void findTargetPopularPost() {}
+    private void ensureAuthenticated() {
+        if (accessJwt == null) {
+            ServerResource server = bluesky.server();
+            ServerCreateSessionRequest.ServerCreateSessionRequestBuilder builder =
+                    ServerCreateSessionRequest.builder();
+            String blueskyFullHandle = blueskyConfig.getFullHandle();
+            String appPassword = blueskyConfig.getAppPassword();
+            ServerCreateSessionRequest sessionRequest = builder.identifier(blueskyFullHandle)
+                    .password(appPassword).build();
+            Response<ServerCreateSessionResponse> response = server.createSession(sessionRequest);
+
+            accessJwt = response.get().getAccessJwt();
+        }
+    }
+
+    public FeedDefsFeedViewPost findTargetPopularPost() {
+        ensureAuthenticated();
+
+        FeedGetAuthorFeedRequest.FeedGetAuthorFeedRequestBuilder feedRequestBuilder =
+                FeedGetAuthorFeedRequest.builder();
+        FeedResource feedResource = bluesky.feed();
+        String blueskyFullHandle = blueskyConfig.getFullHandle();
+        FeedGetAuthorFeedRequest feedRequest = feedRequestBuilder.accessJwt(accessJwt)
+                .actor(blueskyFullHandle).build();
+        Response<FeedGetAuthorFeedResponse> respFeedResp = feedResource.getAuthorFeed(feedRequest);
+        FeedGetAuthorFeedResponse feedResponse = respFeedResp.get();
+        List<FeedDefsFeedViewPost> viewPosts = feedResponse.getFeed();
+        int highestRepostCount = 0;
+        int highestLikeCountForMostReposted = 0;
+        FeedDefsFeedViewPost mostPopularViewPost = null;
+        for (FeedDefsFeedViewPost viewPost : viewPosts) {
+            FeedDefsPostView post = viewPost.getPost();
+            FeedDefsViewerState viewer = post.getViewer();
+            if (viewer.getRepost() == null) {
+                // Found an original post.
+                Integer repostCount = post.getRepostCount();
+                Integer likeCount = post.getLikeCount();
+                if (repostCount > highestRepostCount) {
+                    mostPopularViewPost = viewPost;
+                    highestRepostCount = repostCount;
+                    highestLikeCountForMostReposted = likeCount;
+                } else if (repostCount == highestRepostCount) {
+                    if (likeCount > highestLikeCountForMostReposted) {
+                        highestLikeCountForMostReposted = likeCount;
+                        mostPopularViewPost = viewPost;
+                    }
+                }
+            }
+        }
+        return mostPopularViewPost;
+    }
 }

@@ -39,24 +39,24 @@ class BotSpec extends Specification {
         Status retweet = Mock()
 
         when:
-        Status result = bot.go()
+        bot.go()
 
         then:
-        1 * retweeterFactory.build({user: 'SchoolsOfFish'}) >> sofRetweeter
-        1 * retweeterFactory.build({user: 'EmojiPettingZoo'}) >> epzRetweeter
+//        1 * retweeterFactory.build({user: 'SchoolsOfFish'}) >> sofRetweeter
+//        1 * retweeterFactory.build({user: 'EmojiPettingZoo'}) >> epzRetweeter
 
         1 * blueskyReposterFactory.build({shortHandle: 'schoolsoffish'}) >> sofBlueskyReposter
         1 * blueskyReposterFactory.build({shortHandle: 'emojipettingzoo'}) >> epzBlueskyReposter
 
-        1 * epzRetweeter.findTargetPopularTweet() >> epzTweet
-        1 * sofRetweeter.unretweet()
-        1 * epzTweet.getId() >> 33L
-        1 * sofRetweeter.retweet(33L) >> retweet
+//        1 * epzRetweeter.findTargetPopularTweet() >> epzTweet
+//        1 * sofRetweeter.unretweet()
+//        1 * epzTweet.getId() >> 33L
+//        1 * sofRetweeter.retweet(33L) >> retweet
 
         1 * sofBlueskyReposter.unrepost()
         1 * epzBlueskyReposter.findTargetPopularPost()
 
-        result == retweet
+//        result == retweet
         0 * _._
     }
 }

@@ -42,7 +42,8 @@ public class LambdaRequestHandler implements RequestHandler<Object, Object> {
         // bsky4j logs session credentials, which is bad security. Turn it off.
         Logger.getLogger(HttpClientImpl.class).setLogLevel(Logger.LogLevel.ERROR);
 
-        return bot.go();
+        bot.go();
+        return null;
     }
 
     public static void main(String[] args) {
