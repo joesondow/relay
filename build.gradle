@@ -21,7 +21,7 @@ apply plugin: 'java'
 apply plugin: "groovy"
 
 group = 'sondow'
-version = '1.4'
+version = '1.5'
 
 description = """\
 Uses AWS Lambda to automate retweets.
