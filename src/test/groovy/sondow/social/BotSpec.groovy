@@ -22,6 +22,10 @@ class BotSpec extends Specification {
         envVars.set("cred_bluesky_SchoolsOfFish", "bsky.social,schoolsoffish,fishyapppassword")
         envVars.set("cred_bluesky_EmojiPettingZoo", "bsky.social,emojipettingzoo,zooapppassword")
 
+        envVars.set("mastodon_short_handles", "SchoolsOfFish,EmojiPettingZoo${f}")
+        envVars.set("cred_mastodon_SchoolsOfFish", "mas.to,schoolsoffish,fishyaccesstoken")
+        envVars.set("cred_mastodon_EmojiPettingZoo", "mas.to,emojipettingzoo,zooaccesstoken")
+
         envVars.set("poll_accounts", "")
         RetweeterFactory retweeterFactory = Mock()
         BlueskyReposterFactory blueskyReposterFactory = Mock()

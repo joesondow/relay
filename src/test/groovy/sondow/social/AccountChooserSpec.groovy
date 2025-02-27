@@ -17,9 +17,13 @@ class AccountChooserSpec extends Specification {
         setup:
         Configuration tc = Mock()
         BlueskyConfig b = Mock()
+        MastodonConfig m = Mock()
         BotConfig botConfig = new BotConfig(
                 [Chidi: b, Eleanor: b, Jason: b, Tahani: b, Michael: b, Janet: b, Derek:
-                        b] as LinkedHashMap, null,
+                        b] as LinkedHashMap,
+                [Dylan: m, Mark: m, Helly: m, Irving: m, Burt: m, Milchick: m, Cobel:
+                        m] as LinkedHashMap,
+                null,
                 [Scrooge: tc, Launchpad: tc, Darkwing: tc, Gosling: tc, Huey: tc, Duey: tc, Louie:
                         tc] as LinkedHashMap, [])
         Time time = Mock()

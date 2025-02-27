@@ -30,9 +30,11 @@ public class BotConfig {
     /** Screen names of accounts where the tweets to retweet are live polls */
     private final List<String> twitterPollAccounts;
 
-    BotConfig(LinkedHashMap<String, BlueskyConfig> blueskyShortHandlesToConfigs, Configuration pollReadingTwitterConfig, LinkedHashMap<String, Configuration> screenNamesToTwitterConfigs, List<String> twitterPollAccounts) {
+    BotConfig(LinkedHashMap<String, BlueskyConfig> blueskyShortHandlesToConfigs,
+            LinkedHashMap<String, MastodonConfig> mastodonShortHandlesToConfigs,
+            Configuration pollReadingTwitterConfig, LinkedHashMap<String, Configuration> screenNamesToTwitterConfigs, List<String> twitterPollAccounts) {
         this.blueskyShortHandlesToConfigs = blueskyShortHandlesToConfigs;
-        this.mastodonUsernamesToConfigs = null;
+        this.mastodonUsernamesToConfigs = mastodonShortHandlesToConfigs;
         this.pollReadingTwitterConfig = pollReadingTwitterConfig;
         this.screenNamesToTwitterConfigs = screenNamesToTwitterConfigs;
         this.twitterPollAccounts = twitterPollAccounts;
@@ -40,6 +42,10 @@ public class BotConfig {
 
     public LinkedHashMap<String, BlueskyConfig> getBlueskyShortHandlesToConfigs() {
         return blueskyShortHandlesToConfigs;
+    }
+
+    public LinkedHashMap<String, MastodonConfig> getMastodonShortHandlesToConfigs() {
+        return mastodonUsernamesToConfigs;
     }
 
     public Configuration getPollReadingTwitterConfig() {

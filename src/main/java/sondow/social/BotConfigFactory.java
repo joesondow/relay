@@ -49,7 +49,8 @@ public class BotConfigFactory {
         String pollTwitterAccountsCsv = environment.require("poll_accounts");
         String[] pollTwitterAccountsArray = pollTwitterAccountsCsv.split(",");
         List<String> pollTwitterAccounts = Arrays.asList(pollTwitterAccountsArray);
-        return new BotConfig(blueskyShortHandlesToConfigs, null, screenNamesToTwitterConfigs, pollTwitterAccounts) ;
+        return new BotConfig(blueskyShortHandlesToConfigs, mastodonShortHandlesToConfigs,
+                null, screenNamesToTwitterConfigs, pollTwitterAccounts) ;
     }
 
     private BlueskyConfig configureBluesky(String envVar) {
