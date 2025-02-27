@@ -14,6 +14,9 @@ public class BotConfig {
     /** Credentials for logging into Bluesky */
     private final LinkedHashMap<String, BlueskyConfig> blueskyShortHandlesToConfigs;
 
+    /** Credentials for logging into Mastodon */
+    private final LinkedHashMap<String, MastodonConfig> mastodonUsernamesToConfigs;
+
     /**
      * The configuration for the Twitter account used to read polls.
      */
@@ -29,6 +32,7 @@ public class BotConfig {
 
     BotConfig(LinkedHashMap<String, BlueskyConfig> blueskyShortHandlesToConfigs, Configuration pollReadingTwitterConfig, LinkedHashMap<String, Configuration> screenNamesToTwitterConfigs, List<String> twitterPollAccounts) {
         this.blueskyShortHandlesToConfigs = blueskyShortHandlesToConfigs;
+        this.mastodonUsernamesToConfigs = null;
         this.pollReadingTwitterConfig = pollReadingTwitterConfig;
         this.screenNamesToTwitterConfigs = screenNamesToTwitterConfigs;
         this.twitterPollAccounts = twitterPollAccounts;
