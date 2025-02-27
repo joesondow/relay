@@ -69,6 +69,9 @@ public class Bot {
         blueskyPromoterReposter.unrepost();
 
         PromoterAndTarget mastodonPromoterAndTarget = accountChooser.chooseBlueskyPromoterAndTarget();
+        String mastodonTargetShortName = mastodonPromoterAndTarget.getTarget();
+        String mastodonPromoterShortName = mastodonPromoterAndTarget.getPromoter();
+        BlueskyConfig mastodonPromoterConfig = botConfig.getMastodonShortHandlesToConfigs(mastodonPromoterShortName);
 
         Status retweet = null;
         Long tweetId = null;
