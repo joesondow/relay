@@ -31,6 +31,13 @@ public class BotConfigFactory {
             BlueskyConfig blueskyConfig = configureBluesky("cred_bluesky_" + shortHandle);
             blueskyShortHandlesToConfigs.put(shortHandle, blueskyConfig);
         }
+        LinkedHashMap<String, MastodonConfig> mastodonShortHandlesToConfigs = new LinkedHashMap<>();
+        String mastodonShortHandlesCsv = environment.require("mastodon_short_handles");
+        String[] mastodonShortHandles = mastodonShortHandlesCsv.split(",");
+        for (String shortHandle : mastodonShortHandles) {
+            MastodonConfig mastodonConfig = configureMastodon("cred_mastodon_" + shortHandle);
+            mastodonShortHandlesToConfigs.put(shortHandle, mastodonConfig);
+        }
 
         String targetTwitterAccountsCsv = environment.require("target_accounts");
         String[] targetTwitterAccounts = targetTwitterAccountsCsv.split(",");
@@ -52,6 +59,15 @@ public class BotConfigFactory {
         String shortHandle = tokens[1];
         String appPassword = tokens[2];
         return new BlueskyConfig(server, shortHandle, appPassword);
+    }
+
+    private MastodonConfig configureMastodon(String envVar) {
+        String credentialsCsv = environment.require(envVar);
+        String[] tokens = credentialsCsv.split(",");
+        String server = tokens[0];
+        String shortHandle = tokens[1];
+        String appPassword = tokens[2];
+        return new MastodonConfig(server, shortHandle, appPassword);
     }
 
     private Configuration configureTwitter(String envVar) {
