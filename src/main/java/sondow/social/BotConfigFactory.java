@@ -31,17 +31,18 @@ public class BotConfigFactory {
             BlueskyConfig blueskyConfig = configureBluesky("cred_bluesky_" + shortHandle);
             blueskyShortHandlesToConfigs.put(shortHandle, blueskyConfig);
         }
-        String targetAccountsCsv = environment.require("target_accounts");
-        String[] targetAccounts = targetAccountsCsv.split(",");
-        LinkedHashMap<String, Configuration> screenNamesToConfigs = new LinkedHashMap<>();
-//        for (String account : targetAccounts) {
+
+        String targetTwitterAccountsCsv = environment.require("target_accounts");
+        String[] targetTwitterAccounts = targetTwitterAccountsCsv.split(",");
+        LinkedHashMap<String, Configuration> screenNamesToTwitterConfigs = new LinkedHashMap<>();
+//        for (String account : targetTwitterAccounts) {
 //            Configuration configuration = configureTwitter("cred_" + account);
 //            screenNamesToConfigs.put(account, configuration);
 //        }
-        String pollAccountsCsv = environment.require("poll_accounts");
-        String[] pollAccountsArray = pollAccountsCsv.split(",");
-        List<String> pollAccounts = Arrays.asList(pollAccountsArray);
-        return new BotConfig(blueskyShortHandlesToConfigs, null, screenNamesToConfigs, pollAccounts) ;
+        String pollTwitterAccountsCsv = environment.require("poll_accounts");
+        String[] pollTwitterAccountsArray = pollTwitterAccountsCsv.split(",");
+        List<String> pollTwitterAccounts = Arrays.asList(pollTwitterAccountsArray);
+        return new BotConfig(blueskyShortHandlesToConfigs, null, screenNamesToTwitterConfigs, pollTwitterAccounts) ;
     }
 
     private BlueskyConfig configureBluesky(String envVar) {
