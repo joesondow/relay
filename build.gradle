@@ -24,7 +24,7 @@ group = 'sondow'
 version = '1.5'
 
 description = """\
-Uses AWS Lambda to automate retweets.
+Uses AWS Lambda to automate reposts.
 ------------------------------------------
 Project version: ${version}
 Gradle version: ${gradle.gradleVersion}
