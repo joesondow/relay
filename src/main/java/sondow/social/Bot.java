@@ -20,21 +20,26 @@ public class Bot {
     private final RetweeterFactory retweeterFactory;
 
     private final BlueskyReposterFactory blueskyReposterFactory;
+    private final MastodonReposterFactory mastodonReposterFactory;
     private final Time time;
     private final PollTweetChooserFactory pollTweetChooserFactory;
 
     Bot(BotConfigFactory botConfigFactory, RetweeterFactory retweeterFactory,
-            BlueskyReposterFactory blueskyReposterFactory, Time time,
+            BlueskyReposterFactory blueskyReposterFactory,
+            MastodonReposterFactory mastodonReposterFactory,
+            Time time,
             PollTweetChooserFactory pollTweetChooserFactory) {
         this.botConfig = botConfigFactory.configure();
         this.retweeterFactory = retweeterFactory;
         this.blueskyReposterFactory = blueskyReposterFactory;
+        this.mastodonReposterFactory = mastodonReposterFactory;
         this.time = time;
         this.pollTweetChooserFactory = pollTweetChooserFactory;
     }
 
     Bot() {
         this(new BotConfigFactory(), new RetweeterFactory(), new BlueskyReposterFactory(),
+                new MastodonReposterFactory(),
                 new Time(), new PollTweetChooserFactory());
     }
 
