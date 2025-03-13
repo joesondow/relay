@@ -59,6 +59,10 @@ public class BotConfig {
         return blueskyShortHandlesToConfigs.get(shortName);
     }
 
+    public MastodonConfig getMastodonConfig(String shortName) {
+        return mastodonUsernamesToConfigs.get(shortName);
+    }
+
     public boolean isPollAccount(String targetScreenName) {
         return twitterPollAccounts.contains(targetScreenName);
     }
